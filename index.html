@@ -473,6 +473,10 @@
                 try {
                     await fetch(GAS_URL, {
                         method: 'POST',
+                        headers: {
+                            'Content-Type': 'text/plain;charset=utf-8',
+                        },
+                        redirect: 'follow',
                         body: JSON.stringify(appData)
                     });
                     cloudIndicator.innerHTML = `<span class="text-green-600">☁️ ออนไลน์ (ซิงค์แล้ว)</span>`;
@@ -489,14 +493,23 @@
             const cloudIndicator = document.getElementById('cloud-status');
             cloudIndicator.innerHTML = `<span class="syncing">☁️ กำลังดึงข้อมูล...</span>`;
             try {
-                const response = await fetch(GAS_URL);
+                const response = await fetch(GAS_URL, {
+                    method: 'GET',
+                    redirect: 'follow'
+                });
                 const rawText = await response.text();
                 
+                // ตรวจสอบเบื้องต้น ถ้ามีข้อความแปลกประหลาดส่งมาจาก Google (เช่นหน้า Login)
+                if(rawText.trim().startsWith('<')) {
+                    throw new Error("ระบบถูกบล็อก: โปรดตรวจสอบว่าสิทธิ์การเข้าถึงเป็น 'ทุกคน' (Anyone) หรือไม่");
+                }
+
                 let cloudData = null;
                 try {
                     cloudData = JSON.parse(rawText);
                 } catch (parseError) {
-                    throw new Error("ข้อมูลใน Google Sheets ไม่ใช่รูปแบบ JSON (อาจมีข้อความแปลกปลอมในช่อง A1)");
+                    console.error("นี่คือข้อมูลที่ส่งมาจาก Google Sheets แล้วทำให้พัง:", rawText);
+                    throw new Error("ข้อมูลในชีตไม่ใช่รูปแบบที่ถูกต้อง (ตรวจสอบช่อง A1 และ B1)");
                 }
 
                 if(cloudData && cloudData.classes) {
@@ -507,11 +520,17 @@
                     if(!document.getElementById('dashboard-view').classList.contains('hidden')) { populateDashDropdown(); renderDashboard(); }
                     if(loggedInStudentId) performStudentLogin(loggedInStudentId);
                 } else {
-                    throw new Error("โครงสร้างข้อมูลไม่ถูกต้อง");
+                    throw new Error("โครงสร้างข้อมูลในชีตว่างเปล่าหรือไม่ถูกต้อง");
                 }
             } catch (error) {
                 console.error("Fetch Error:", error);
-                cloudIndicator.innerHTML = `<span class="text-orange-500">☁️ ออฟไลน์ (ใช้ข้อมูลในเครื่อง)</span>`;
+                // แสดงข้อความแจ้งเตือนที่ชัดเจนขึ้นเพื่อให้ผู้ใช้รู้ว่าผิดตรงไหน
+                cloudIndicator.innerHTML = `<span class="text-orange-500" title="${error.message}">☁️ ออฟไลน์ (ข้อมูล Sheets มีปัญหา)</span>`;
+                
+                // แอบแจ้งเตือนครูถ้าเข้ามาในโหมด Admin
+                if(adminAuthenticated) {
+                    setTimeout(() => showModal({title:"ข้อผิดพลาดการดึงข้อมูลออนไลน์", msg: `ระบบไม่สามารถดึงข้อมูลจาก Google Sheets ได้<br><br><span class="text-xs text-red-500 font-medium">สาเหตุ: ${error.message}</span><br><br><b>วิธีแก้:</b><br>1. เช็คสิทธิ์ใน Apps Script ว่าเป็น 'Anyone' และ Deploy แบบ New Version<br>2. เช็คชีต 'Database' ช่อง A1 ต้องเป็น APP_DATA_JSON และ B1 เป็นข้อมูล JSON`, type:"alert"}), 500);
+                }
             }
         }
 
@@ -530,6 +549,8 @@
                 
                 const res = await fetch(GAS_URL, {
                     method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    redirect: 'follow',
                     body: JSON.stringify(payload)
                 });
                 
