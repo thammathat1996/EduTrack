@@ -6,7 +6,6 @@
     <title>ระบบจัดการคะแนนนักเรียน | EduTrack</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- นำเข้าไลบรารีสำหรับอ่าน QR Code ด้วยกล้อง -->
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
     <style>
         body { font-family: 'Prompt', sans-serif; background-color: #FDFBF7; color: #3D342E; }
@@ -296,7 +295,7 @@
                                 <span class="text-[11px] font-medium text-gray-500 px-2 whitespace-nowrap bg-gray-100 py-1.5 border-r border-gray-300">ไฟล์รูป</span>
                                 <input type="file" id="input-std-avatar-file" accept="image/*" class="w-full text-xs text-gray-500 file:hidden pl-2 py-1 outline-none">
                             </div>
-                            <button type="submit" class="w-full lg:w-1/3 bg-earth-green hover:bg-[#1e332b] text-white px-3 py-1.5 rounded-lg text-sm font-medium transition-colors">เพิ่มข้อมูล</button>
+                            <button type="submit" id="btn-add-student" class="w-full lg:w-1/3 bg-earth-green hover:bg-[#1e332b] text-white px-3 py-1.5 rounded-lg text-sm font-medium transition-colors">เพิ่มข้อมูล</button>
                         </div>
                     </form>
                     <div class="mt-3 flex items-center justify-between border-t border-gray-100 pt-3">
@@ -374,8 +373,8 @@
 
     <!-- Scanner Modal -->
     <div id="scanner-modal" class="fixed inset-0 z-[110] hidden items-center justify-center bg-black bg-opacity-60 backdrop-blur-sm px-4">
-        <div class="bg-white rounded-3xl p-6 max-w-lg w-full shadow-2xl relative">
-            <button onclick="closeScannerModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-700 bg-gray-100 rounded-full p-2">
+        <div class="bg-white rounded-3xl p-6 max-w-lg w-full shadow-2xl relative flex flex-col max-h-[90vh]">
+            <button onclick="closeScannerModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-700 bg-gray-100 rounded-full p-2 z-10">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
             
@@ -383,23 +382,24 @@
                 📷 โหมดสแกนเนอร์ตรวจงานด่วน
             </h3>
             
-            <div class="mb-3">
-                <label class="block text-sm font-bold text-gray-700 mb-1">1. เลือกห้องเรียนที่จะตรวจ:</label>
-                <select id="scanner-class-selector" onchange="onScannerClassChange()" class="w-full border-2 border-gray-200 rounded-xl px-4 py-2 bg-white focus:ring-2 focus:ring-earth-green font-medium text-earth-orange">
-                    <!-- Injected by JS -->
-                </select>
+            <div class="mb-4 overflow-y-auto custom-scrollbar pr-2 flex-shrink-0">
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-1">1. เลือกห้องเรียนที่จะตรวจ:</label>
+                        <select id="scanner-class-selector" onchange="onScannerClassChange()" class="w-full border-2 border-gray-200 rounded-xl px-4 py-2 bg-white focus:ring-2 focus:ring-earth-sage font-medium text-sm"></select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-1">2. เลือกเป้าหมายที่จะบันทึกเมื่อสแกนสำเร็จ:</label>
+                        <select id="scanner-target" class="w-full border-2 border-gray-200 rounded-xl px-4 py-2 bg-gray-50 focus:ring-2 focus:ring-earth-green font-medium text-sm">
+                            <!-- Injected by JS -->
+                        </select>
+                    </div>
+                </div>
             </div>
 
-            <div class="mb-4">
-                <label class="block text-sm font-bold text-gray-700 mb-1">2. เลือกเป้าหมายที่จะบันทึกเมื่อสแกนสำเร็จ:</label>
-                <select id="scanner-target" class="w-full border-2 border-gray-200 rounded-xl px-4 py-2 bg-gray-50 focus:ring-2 focus:ring-earth-green font-medium">
-                    <!-- Injected by JS -->
-                </select>
-            </div>
+            <div id="qr-reader" class="mb-4 flex-grow relative bg-black rounded-xl overflow-hidden min-h-[250px]"></div>
 
-            <div id="qr-reader" class="mb-4"></div>
-
-            <div id="scanner-result" class="p-4 rounded-xl text-center font-bold text-sm bg-gray-50 border border-gray-200 text-gray-500 h-[60px] flex items-center justify-center transition-colors">
+            <div id="scanner-result" class="p-4 rounded-xl text-center font-bold text-sm bg-gray-50 border border-gray-200 text-gray-500 h-[70px] flex items-center justify-center transition-colors flex-shrink-0">
                 รอการสแกน QR Code...
             </div>
         </div>
@@ -425,25 +425,13 @@
         const btnConfirm = document.getElementById('custom-modal-confirm');
 
         function showModal({title, msg, type = 'alert', inputType = 'text', onConfirm}) {
-            modalTitle.innerText = title;
-            modalMsg.innerHTML = msg;
-            modalInput.type = inputType;
-            modalInput.value = '';
-            
-            if(type === 'alert') {
-                modalInput.classList.add('hidden'); btnCancel.classList.add('hidden'); btnConfirm.classList.add('w-full');
-            } else {
-                btnCancel.classList.remove('hidden'); btnConfirm.classList.remove('w-full');
-                if(type === 'prompt') modalInput.classList.remove('hidden'); else modalInput.classList.add('hidden');
-            }
+            modalTitle.innerText = title; modalMsg.innerHTML = msg; modalInput.type = inputType; modalInput.value = '';
+            if(type === 'alert') { modalInput.classList.add('hidden'); btnCancel.classList.add('hidden'); btnConfirm.classList.add('w-full'); } 
+            else { btnCancel.classList.remove('hidden'); btnConfirm.classList.remove('w-full'); if(type === 'prompt') modalInput.classList.remove('hidden'); else modalInput.classList.add('hidden'); }
             modal.classList.remove('hidden'); modal.classList.add('flex');
             if(type === 'prompt') setTimeout(() => modalInput.focus(), 100);
-
             btnCancel.onclick = hideModal;
-            btnConfirm.onclick = () => {
-                hideModal();
-                if(onConfirm) { type === 'prompt' ? onConfirm(modalInput.value) : onConfirm(); }
-            };
+            btnConfirm.onclick = () => { hideModal(); if(onConfirm) { type === 'prompt' ? onConfirm(modalInput.value) : onConfirm(); } };
             if(type === 'prompt') { modalInput.onkeypress = (e) => { if(e.key === 'Enter') btnConfirm.click(); }; }
         }
         function hideModal() { modal.classList.add('hidden'); modal.classList.remove('flex'); }
@@ -454,21 +442,18 @@
             const viewerModal = document.getElementById('image-viewer-modal');
             const img = document.getElementById('image-viewer-img');
             img.src = url;
-            viewerModal.classList.remove('hidden');
-            viewerModal.classList.add('flex');
+            viewerModal.classList.remove('hidden'); viewerModal.classList.add('flex');
         }
-
         function closeImageViewer() {
             const viewerModal = document.getElementById('image-viewer-modal');
-            viewerModal.classList.add('hidden');
-            viewerModal.classList.remove('flex');
+            viewerModal.classList.add('hidden'); viewerModal.classList.remove('flex');
             setTimeout(() => { document.getElementById('image-viewer-img').src = ''; }, 300);
         }
 
         // ==========================================
         // 1. DATA & STATE MANAGEMENT (CLOUD SYNC)
         // ==========================================
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbwm1ZtEmXOyKiL0F7aH1pNYPH8DGIAxGNf28peEu2fzMXeUP8KlJTOy2GYdkczvKMDm/exec"; 
+        const GAS_URL = "https://script.google.com/macros/s/AKfycby_swsj3ashNNIzE0IGrU6VPucTAtq6RIhqal5-GL2OQcH2waddE8Z2TCPGO1o1H3WC/exec"; 
         
         let appData = JSON.parse(localStorage.getItem('eduTrackData_v3'));
         if (!appData || !appData.classes) appData = { classes: [] };
@@ -487,9 +472,7 @@
                 cloudIndicator.innerHTML = `<span class="syncing">☁️ กำลังบันทึก...</span>`;
                 try {
                     await fetch(GAS_URL, {
-                        method: 'POST', 
-                        mode: 'no-cors', // ทะลุการบล็อก CORS ของ Google
-                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                        method: 'POST',
                         body: JSON.stringify(appData)
                     });
                     cloudIndicator.innerHTML = `<span class="text-green-600">☁️ ออนไลน์ (ซิงค์แล้ว)</span>`;
@@ -507,7 +490,15 @@
             cloudIndicator.innerHTML = `<span class="syncing">☁️ กำลังดึงข้อมูล...</span>`;
             try {
                 const response = await fetch(GAS_URL);
-                const cloudData = await response.json();
+                const rawText = await response.text();
+                
+                let cloudData = null;
+                try {
+                    cloudData = JSON.parse(rawText);
+                } catch (parseError) {
+                    throw new Error("ข้อมูลใน Google Sheets ไม่ใช่รูปแบบ JSON (อาจมีข้อความแปลกปลอมในช่อง A1)");
+                }
+
                 if(cloudData && cloudData.classes) {
                     appData = cloudData;
                     localStorage.setItem('eduTrackData_v3', JSON.stringify(appData));
@@ -515,6 +506,8 @@
                     if(!document.getElementById('teacher-view').classList.contains('hidden')) renderTeacherView();
                     if(!document.getElementById('dashboard-view').classList.contains('hidden')) { populateDashDropdown(); renderDashboard(); }
                     if(loggedInStudentId) performStudentLogin(loggedInStudentId);
+                } else {
+                    throw new Error("โครงสร้างข้อมูลไม่ถูกต้อง");
                 }
             } catch (error) {
                 console.error("Fetch Error:", error);
@@ -522,10 +515,38 @@
             }
         }
 
+        // ==========================================
+        // 🚀 ระบบอัปโหลดรูปภาพเข้า Google Drive โดยตรง
+        // ==========================================
+        async function uploadImageToDrive(base64Data, filename) {
+            if(!GAS_URL || GAS_URL === "") return null;
+            try {
+                const payload = {
+                    action: "uploadImage",
+                    filename: filename + ".jpg",
+                    mimeType: "image/jpeg",
+                    base64: base64Data
+                };
+                
+                const res = await fetch(GAS_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                });
+                
+                const result = await res.json();
+                if(result.success && result.url) {
+                    return result.url;
+                }
+                return null;
+            } catch(error) {
+                console.error("Drive Upload Error:", error);
+                return null;
+            }
+        }
+
         function generateId() { return Math.random().toString(36).substr(2, 9); }
         function getActiveAdminClass() { return appData.classes.find(c => c.id === activeAdminClassId); }
 
-        // --- Avatar Generation (Fallback) ---
         function generateSvgAvatar(name) {
             const colors = ['#2C4A3E', '#D97443', '#8F9E8B', '#3b82f6', '#8b5cf6', '#f59e0b', '#10b981'];
             const char = (name && name.length > 0) ? name.charAt(0) : '?';
@@ -548,14 +569,14 @@
                     img.src = e.target.result;
                     img.onload = () => {
                         const canvas = document.createElement('canvas');
-                        const MAX_WIDTH = 150; const MAX_HEIGHT = 150;
+                        const MAX_WIDTH = 300; const MAX_HEIGHT = 300;
                         let width = img.width; let height = img.height;
                         if (width > height) { if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; } } 
                         else { if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; } }
                         canvas.width = width; canvas.height = height;
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, width, height);
-                        resolve(canvas.toDataURL('image/jpeg', 0.7)); 
+                        resolve(canvas.toDataURL('image/jpeg', 0.8));
                     };
                     img.onerror = error => reject(error);
                 };
@@ -577,21 +598,19 @@
 
         function openScannerModal() {
             if(appData.classes.length === 0) return showModal({title:"แจ้งเตือน", msg:"กรุณาเพิ่มห้องเรียนและนักเรียนก่อนเปิดโหมดสแกน"});
-
-            // 1. โหลดรายชื่อห้องเรียนใส่ Dropdown
-            let classOpts = '';
+            
+            let classOpts = "";
             appData.classes.forEach(c => {
                 const sel = c.id === activeAdminClassId ? 'selected' : '';
                 classOpts += `<option value="${c.id}" ${sel}>${c.name}</option>`;
             });
             document.getElementById('scanner-class-selector').innerHTML = classOpts;
 
-            // 2. โหลดชิ้นงานของห้องนั้นๆ
             updateScannerTargets(activeAdminClassId);
 
             document.getElementById('scanner-modal').classList.remove('hidden');
             document.getElementById('scanner-modal').classList.add('flex');
-            document.getElementById('scanner-result').className = "p-4 rounded-xl text-center font-bold text-sm bg-gray-50 border border-gray-200 text-gray-500 h-[60px] flex items-center justify-center transition-colors";
+            document.getElementById('scanner-result').className = "p-4 rounded-xl text-center font-bold text-sm bg-gray-50 border border-gray-200 text-gray-500 h-[70px] flex items-center justify-center transition-colors";
             document.getElementById('scanner-result').innerText = "รอการสแกน QR Code...";
 
             html5QrcodeScanner = new Html5QrcodeScanner("qr-reader", { fps: 10, qrbox: {width: 250, height: 250} });
@@ -600,7 +619,7 @@
 
         function onScannerClassChange() {
             const selectedClassId = document.getElementById('scanner-class-selector').value;
-            activeAdminClassId = selectedClassId; // ซิงค์ห้องเรียนพื้นหลัง
+            activeAdminClassId = selectedClassId;
             document.getElementById('teacher-class-selector').value = selectedClassId;
             renderTeacherView();
             updateScannerTargets(selectedClassId);
@@ -609,6 +628,7 @@
         function updateScannerTargets(classId) {
             const cls = appData.classes.find(c => c.id === classId);
             if(!cls) return;
+
             let options = `<option value="bonus">🌟 ให้ดาวพิเศษ (+1)</option>`;
             cls.assignments.forEach(task => {
                 options += `<option value="task_full_${task.id}">💯 ให้คะแนนเต็ม: ${task.name}</option>`;
@@ -644,7 +664,7 @@
             const resBox = document.getElementById('scanner-result');
 
             if (!std) {
-                resBox.className = "p-4 rounded-xl text-center font-bold text-sm bg-red-100 border border-red-300 text-red-700 h-[60px] flex items-center justify-center transition-colors";
+                resBox.className = "p-4 rounded-xl text-center font-bold text-sm bg-red-100 border border-red-300 text-red-700 h-[70px] flex items-center justify-center transition-colors";
                 resBox.innerHTML = `❌ ไม่พบรหัสนักเรียน <span class="text-black ml-1">${scannedId}</span> ในห้อง ${cls.name}`;
             } else {
                 const target = document.getElementById('scanner-target').value;
@@ -659,7 +679,7 @@
                     const taskId = target.replace("task_full_", "");
                     const taskInfo = cls.assignments.find(a => a.id === taskId);
                     std.scores[taskId] = taskInfo.maxScore;
-                    successMsg = `💯 ให้คะแนนเต็ม <b>${std.name}</b> ในงาน ${taskInfo.name} แล้ว!`;
+                    successMsg = `💯 ให้คะแนนเต็มงาน ${taskInfo.name} ของ <b>${std.name}</b> แล้ว!`;
                 }
                 else if (target.startsWith("task_")) {
                     const taskId = target.replace("task_", "");
@@ -667,17 +687,17 @@
                     if(!std.scores[taskId] || std.scores[taskId] === "") {
                         std.scores[taskId] = "submitted";
                     }
-                    successMsg = `📝 ติ๊กส่งงานให้ <b>${std.name}</b> แล้ว!`;
+                    successMsg = `📝 ติ๊กส่งงาน ${taskInfo.name} ของ <b>${std.name}</b> แล้ว!`;
                 }
 
                 saveData();
-                resBox.className = "p-4 rounded-xl text-center font-bold text-sm bg-green-100 border border-green-400 text-green-800 h-[60px] flex flex-col items-center justify-center transition-colors shadow-inner scale-105";
+                resBox.className = "p-4 rounded-xl text-center font-bold text-sm bg-green-100 border border-green-400 text-green-800 h-[70px] flex flex-col items-center justify-center transition-colors shadow-inner scale-105";
                 resBox.innerHTML = `✅ สำเร็จ!<br><span class="text-xs font-normal mt-1">${successMsg}</span>`;
             }
 
             setTimeout(() => {
                 isProcessingScan = false;
-                resBox.className = "p-4 rounded-xl text-center font-bold text-sm bg-gray-50 border border-gray-200 text-gray-500 h-[60px] flex items-center justify-center transition-colors";
+                resBox.className = "p-4 rounded-xl text-center font-bold text-sm bg-gray-50 border border-gray-200 text-gray-500 h-[70px] flex items-center justify-center transition-colors";
                 resBox.innerText = "พร้อมสแกนคนต่อไป...";
             }, 2000);
         }
@@ -780,7 +800,7 @@
                     <td class="px-1 py-1 text-center text-xs font-medium text-gray-600 border-r border-gray-100 zone-info">${std.no}</td>
                     <td class="px-1 py-1 text-center border-r border-gray-100 zone-info">
                         <div class="flex items-center justify-center">
-                            <img src="${avatar}" data-fallback="${fallbackSvg}" onerror="this.onerror=null; this.src=this.getAttribute('data-fallback');" onclick="viewImage(this.src)" class="w-7 h-7 min-w-[28px] rounded-full object-cover border border-gray-200 shadow-sm flex-shrink-0 cursor-pointer hover:ring-2 hover:ring-earth-orange transition-all" title="คลิกดูรูปใหญ่" crossorigin="anonymous">
+                            <img src="${avatar}" data-fallback="${fallbackSvg}" onerror="this.onerror=null; this.src=this.getAttribute('data-fallback');" onclick="viewImage(this.src)" class="w-7 h-7 min-w-[28px] rounded-full object-cover border border-gray-200 shadow-sm flex-shrink-0 cursor-pointer hover:ring-2 hover:ring-earth-orange transition-all" title="คลิกดูรูปใหญ่">
                         </div>
                     </td>
                     <td class="px-1 py-1 text-center text-[11px] text-gray-500 border-r border-gray-100 zone-info">${std.studentId}</td>
@@ -842,7 +862,7 @@
             if(cls.students.length === 0) tbHTML = `<tr><td colspan="15" class="text-center py-10 text-gray-500 text-sm bg-white">ยังไม่มีนักเรียนในห้องนี้ เพิ่มรายชื่อได้ที่ปุ่มแผงจัดการข้อมูลด้านบน</td></tr>`;
             document.getElementById('admin-table-body').innerHTML = tbHTML;
             
-            updateTaskClassCheckboxes(); // อัปเดตรายการกล่องเลือกห้องเรียน
+            updateTaskClassCheckboxes();
 
             if (activeId) setTimeout(() => { let el = document.getElementById(activeId); if (el) el.focus(); }, 10);
         }
@@ -906,18 +926,33 @@
             const lname = document.getElementById('input-std-lname').value.trim(); 
             const name = `${prefix}${fname} ${lname}`.trim();
             
-            const avatarUrl = document.getElementById('input-std-avatar-url').value.trim();
-            const fileInput = document.getElementById('input-std-avatar-file');
-            
-            let avatarData = avatarUrl;
-            if (fileInput.files && fileInput.files[0]) {
-                try { avatarData = await getBase64Image(fileInput.files[0]); } 
-                catch(err) { console.error("Image upload failed", err); }
-            }
-
             if(cls.students.some(s => s.studentId === sid)) return showModal({title:"ข้อมูลซ้ำ", msg:`รหัส ${sid} มีอยู่แล้ว`}); 
             
-            cls.students.push({ id: generateId(), studentId: sid, no: no, name: name, avatar: avatarData, scores: {}, attendance: null, midterm: null, final: null, bonus: 0 }); 
+            const avatarUrl = document.getElementById('input-std-avatar-url').value.trim();
+            const fileInput = document.getElementById('input-std-avatar-file');
+            const btnSubmit = document.getElementById('btn-add-student');
+            
+            let finalAvatar = avatarUrl;
+            
+            if (fileInput.files && fileInput.files[0]) {
+                btnSubmit.innerText = "กำลังอัปโหลด...";
+                btnSubmit.disabled = true;
+                btnSubmit.classList.add('opacity-50');
+                
+                try { 
+                    const base64Data = await getBase64Image(fileInput.files[0]); 
+                    const uploadedUrl = await uploadImageToDrive(base64Data, sid);
+                    if(uploadedUrl) finalAvatar = uploadedUrl;
+                } catch(err) { 
+                    console.error("Image upload failed", err); 
+                }
+                
+                btnSubmit.innerText = "เพิ่มข้อมูล";
+                btnSubmit.disabled = false;
+                btnSubmit.classList.remove('opacity-50');
+            }
+
+            cls.students.push({ id: generateId(), studentId: sid, no: no, name: name, avatar: finalAvatar, scores: {}, attendance: null, midterm: null, final: null, bonus: 0 }); 
             saveData(); renderTeacherView(); e.target.reset(); document.getElementById('input-std-id').focus(); 
         }
 
@@ -1022,8 +1057,16 @@
                     const newAvatarFile = document.getElementById('edit-std-avatar-file');
 
                     let finalAvatar = std.avatar; 
+                    
                     if (newAvatarFile.files && newAvatarFile.files[0]) {
-                        try { finalAvatar = await getBase64Image(newAvatarFile.files[0]); } catch(e){}
+                        document.getElementById('custom-modal-message').innerHTML = `<div class="text-center py-4 text-earth-orange font-bold animate-pulse">กำลังอัปโหลดรูปภาพไปยัง Drive...<br>กรุณารอสักครู่</div>`;
+                        document.getElementById('custom-modal-actions').classList.add('hidden');
+                        
+                        try { 
+                            const base64Data = await getBase64Image(newAvatarFile.files[0]); 
+                            const uploadedUrl = await uploadImageToDrive(base64Data, newId);
+                            if(uploadedUrl) finalAvatar = uploadedUrl;
+                        } catch(e){}
                     } else if (newAvatarUrl !== "") {
                         finalAvatar = newAvatarUrl;
                     }
@@ -1077,9 +1120,9 @@
             const currentScore = std.scores[taskId]; 
             
             if (currentScore !== null && currentScore !== undefined && currentScore !== "") { 
-                std.scores[taskId] = null; // Toggle off
+                std.scores[taskId] = null; // ถ้ามีคะแนนอยู่แล้ว ให้ลบออก (Toggle off)
             } else { 
-                std.scores[taskId] = task.maxScore; // ให้คะแนนเต็มทันที
+                std.scores[taskId] = task.maxScore; // ให้คะแนนเต็มทันที (Toggle on)
             } 
             saveData(); 
             renderTeacherView(); 
