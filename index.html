@@ -8,115 +8,183 @@
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
     <style>
-        body { font-family: 'Prompt', sans-serif; background-color: #FDF8EE; color: #111827; }
-        .custom-scrollbar::-webkit-scrollbar { height: 8px; width: 8px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 4px; border: 1px solid #111827; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #111827; border-radius: 4px; }
+        /* Neo-Brutalism Core Variables & Typography */
+        body { 
+            font-family: 'Prompt', sans-serif; 
+            background-color: #FF4A1C; /* Vibrant Orange Background */
+            color: #111827; 
+            overflow-x: hidden;
+        }
         
-        .bg-earth-green { background-color: #2C4A3E; }
-        .text-earth-green { color: #2C4A3E; }
-        .bg-earth-orange { background-color: #D97443; }
-        .text-earth-orange { color: #D97443; }
-        .bg-earth-sage { background-color: #8F9E8B; }
-        .text-earth-sage { color: #8F9E8B; }
+        .custom-scrollbar::-webkit-scrollbar { height: 10px; width: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; border-left: 3px solid #111827; border-right: 3px solid #111827; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #111827; border: 2px solid #f1f5f9; border-radius: 0; }
         
         input[type="number"]::-webkit-inner-spin-button, 
         input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
         
-        /* Table Colors & Sticky */
-        .zone-info { background-color: #ffffff; }
-        .zone-fixed { background-color: #e0f2fe; } /* Blue tint */
-        .zone-bonus { background-color: #fef08a; } /* Yellow tint */
-        .zone-total { background-color: #dcfce7; } /* Green tint */
+        /* Pastel colors for table headers */
+        .pastel-1 { background-color: #FFD500; } /* Yellow */
+        .pastel-2 { background-color: #FF90E8; } /* Pink */
+        .pastel-3 { background-color: #00A36C; color: white;} /* Green */
+        .pastel-4 { background-color: #2176FF; color: white;} /* Blue */
+        .pastel-5 { background-color: #9D4EDD; color: white;} /* Purple */
+        .pastel-6 { background-color: #ffffff; } /* White */
 
-        .pastel-1 { background-color: #fef08a; }
-        .pastel-2 { background-color: #fed7aa; }
-        .pastel-3 { background-color: #bbf7d0; }
-        .pastel-4 { background-color: #bfdbfe; }
-        .pastel-5 { background-color: #fbcfe8; }
-        .pastel-6 { background-color: #e9d5ff; }
-
-        /* Neo-Brutalism Utilities */
-        .neo-border { border: 3px solid #111827; }
-        .neo-shadow { box-shadow: 4px 4px 0px #111827; }
-        .neo-btn { transition: all 0.15s ease; }
-        .neo-btn:active { transform: translate(3px, 3px); box-shadow: 0px 0px 0px #111827; }
+        /* Neo-Brutalism Utilities (Hard Borders & Shadows) */
+        .neo-border { border: 4px solid #111827; }
+        .neo-shadow { box-shadow: 6px 6px 0px #111827; }
+        .neo-shadow-sm { box-shadow: 4px 4px 0px #111827; }
+        .neo-btn { transition: all 0.1s ease; outline: none; }
+        .neo-btn:active { transform: translate(4px, 4px); box-shadow: 0px 0px 0px #111827; }
         
+        /* Animations */
         @keyframes pulse-green { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
-        .syncing { animation: pulse-green 1.5s infinite; color: #059669; }
+        .syncing { animation: pulse-green 1.5s infinite; color: #111827; }
 
-        /* --- Loader Animations --- */
-        .loader {
-          --color-success-300: #8F9E8B; --color-success-500: #496F5D; --color-success-700: #2C4A3E;
-          display: flex; flex-direction: column; justify-content: center; align-items: center; transform: rotate(5deg);
-        }
+        @keyframes float-slow { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+        @keyframes float-fast { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+        @keyframes float-horizontal { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(15px); } }
+        @keyframes spin-slow { 100% { transform: rotate(360deg); } }
+        
+        .anim-float { animation: float-slow 5s ease-in-out infinite; }
+        .anim-float-fast { animation: float-fast 3s ease-in-out infinite; }
+        .anim-float-h { animation: float-horizontal 6s ease-in-out infinite; }
+        .anim-spin { animation: spin-slow 20s linear infinite; }
+
+        /* Loader */
+        .loader { display: flex; flex-direction: column; justify-content: center; align-items: center; transform: rotate(5deg); }
         .loader .form1, .loader .form2 { display: flex; justify-content: center; align-items: center; }
         .square {
-          width: 40px; height: 40px; margin: 2px; border: 2px solid #111827;
-          background-color: rgba(150, 150, 150, 0.2); border-radius: 6px;
+          width: 40px; height: 40px; margin: 2px; border: 3px solid #111827;
+          background-color: #fff; border-radius: 0;
           animation: blinking 0.8s ease-in-out infinite; opacity: 0;
         }
         @keyframes blinking {
-          0% { opacity: 0.25; background-color: #fef08a; }
-          50% { opacity: 0.5; background-color: #D97443; }
-          75% { opacity: 0.75; background-color: #8F9E8B; }
-          100% { opacity: 1; background-color: #2C4A3E; }
+          0% { opacity: 0.25; background-color: #FFD500; }
+          50% { opacity: 0.5; background-color: #FF90E8; }
+          75% { opacity: 0.75; background-color: #00A36C; }
+          100% { opacity: 1; background-color: #2176FF; }
         }
         .form1 .square:nth-child(1) { animation-delay: 0.2s; }
         .form1 .square:nth-child(2) { animation-delay: 0.4s; }
         .form2 .square:nth-child(2) { animation-delay: 0.6s; }
         .form2 .square:nth-child(1) { animation-delay: 0.8s; }
 
-        /* Scanner overrides */
-        #qr-reader { width: 100% !important; border-radius: 12px; overflow: hidden; border: 4px solid #111827; box-shadow: 4px 4px 0px #111827; background: #fff;}
+        /* Background Pattern */
+        .dot-pattern { background-image: radial-gradient(#111827 2px, transparent 2px); background-size: 40px 40px; opacity: 0.15; }
+
+        /* QR Scanner Overrides */
+        #qr-reader { width: 100% !important; border-radius: 0; overflow: hidden; border: 4px solid #111827; box-shadow: 6px 6px 0px #111827; background: #fff;}
         #qr-reader__scan_region { background: #f8fafc; min-height: 200px; display: flex; align-items: center; justify-content: center; }
         #qr-reader video { width: 100% !important; height: auto !important; object-fit: cover; }
-        #qr-reader button { background: #2C4A3E; color: white; border: 3px solid #111827; padding: 8px 16px; border-radius: 8px; font-family: 'Prompt', sans-serif; cursor: pointer; margin: 5px; font-weight: 900; box-shadow: 2px 2px 0px #111827;}
-        #qr-reader button:hover { transform: translate(1px,1px); box-shadow: 1px 1px 0px #111827; }
-        
-        .progress-bar-fill { transition: width 1s cubic-bezier(0.4, 0, 0.2, 1); }
+        #qr-reader button { background: #FFD500; color: #111827; border: 3px solid #111827; padding: 8px 16px; font-family: 'Prompt', sans-serif; cursor: pointer; margin: 5px; font-weight: 900; box-shadow: 4px 4px 0px #111827; transition: all 0.1s ease;}
+        #qr-reader button:hover { transform: translate(2px,2px); box-shadow: 2px 2px 0px #111827; }
 
-        /* BG Patterns */
-        .dot-pattern { background-image: radial-gradient(#111827 2px, transparent 2px); background-size: 32px 32px; opacity: 0.08; }
+        .progress-bar-fill { transition: width 1s cubic-bezier(0.4, 0, 0.2, 1); }
     </style>
 </head>
 <body class="antialiased min-h-screen flex flex-col relative z-0">
 
-    <!-- 🎨 BACKGROUND ELEMENTS (Hero Design) -->
-    <div class="fixed inset-0 pointer-events-none z-[-1] overflow-hidden bg-[#FDF8EE]">
+    <!-- 🎨 ADVANCED NEO-BRUTALISM BACKGROUND GRAPHICS -->
+    <div class="fixed inset-0 pointer-events-none z-[-1] overflow-hidden bg-[#FF4A1C]">
         <div class="absolute inset-0 dot-pattern"></div>
-        <!-- Orange Sun -->
-        <div class="absolute top-[10%] left-[-10%] w-[300px] h-[300px] md:w-[600px] md:h-[600px] bg-[#E06D3D] rounded-full border-[4px] border-[#111827] opacity-90"></div>
-        <!-- Yellow Hill -->
-        <div class="absolute bottom-0 right-[-5%] w-[400px] h-[300px] md:w-[800px] md:h-[500px] bg-[#EAB308] border-[4px] border-[#111827] rounded-t-full opacity-90 border-b-0"></div>
-        <!-- Star icon -->
-        <svg class="absolute top-[15%] left-[30%] w-16 h-16 md:w-24 md:h-24 text-[#2C4A3E]" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L14.5 9.5H22L16 14.5L18.5 22L12 17L5.5 22L8 14.5L2 9.5H9.5L12 2Z" stroke="#111827" stroke-width="2" stroke-linejoin="round"/></svg>
-        <!-- Zigzag -->
-        <svg class="absolute top-[25%] right-[20%] w-20 h-10 text-transparent" stroke="#111827" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none" viewBox="0 0 100 20"><path d="M0 10 L10 0 L20 20 L30 0 L40 20 L50 0 L60 20 L70 0 L80 20 L90 0 L100 10"/></svg>
+        
+        <!-- Element 1: Browser Window (Top Left) -->
+        <div class="absolute top-[8%] left-[2%] md:top-[12%] md:left-[5%] w-[180px] md:w-[260px] bg-[#FFD500] neo-border neo-shadow hidden sm:block anim-float-fast">
+            <div class="border-b-[4px] border-[#111827] bg-[#FF90E8] h-8 flex justify-between items-center px-3">
+                <span class="text-[10px] font-black uppercase tracking-wider">Search_UI</span>
+                <div class="flex gap-1.5">
+                    <div class="w-3 h-3 border-2 border-[#111827] bg-white"></div>
+                    <div class="w-3 h-3 border-2 border-[#111827] bg-white"></div>
+                    <div class="w-3 h-3 border-2 border-[#111827] bg-[#FF4A1C]"></div>
+                </div>
+            </div>
+            <div class="p-4 flex justify-center items-center h-24">
+                <div class="w-12 h-12 rounded-full border-[4px] border-[#111827] bg-white flex justify-center items-center shadow-[4px_4px_0px_#111827]">
+                    <div class="w-6 h-6 border-[3px] border-[#111827] rounded-full border-r-transparent transform -rotate-45"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Element 2: Notification Box (Bottom Left) -->
+        <div class="absolute bottom-[10%] left-[-5%] md:left-[2%] w-[200px] md:w-[280px] bg-white neo-border neo-shadow hidden md:block anim-float">
+            <div class="border-b-[4px] border-[#111827] bg-[#FFD500] h-7 flex justify-between items-center px-2">
+                <span class="text-[10px] font-black uppercase">Impressive!</span>
+                <span class="text-[10px] font-black">_□X</span>
+            </div>
+            <div class="p-3">
+                <p class="text-[11px] md:text-sm font-bold leading-tight">Welcome back to EduTrack! Keep up the good work.</p>
+            </div>
+            <div class="absolute -bottom-6 -right-6 w-12 h-12 bg-[#00A36C] neo-border anim-spin transform rotate-12"></div>
+        </div>
+
+        <!-- Element 3: Folders & Messages (Top Right) -->
+        <div class="absolute top-[15%] right-[-5%] md:right-[3%] w-[160px] md:w-[220px] bg-[#2176FF] neo-border neo-shadow hidden md:block anim-float-h" style="animation-delay: 1s;">
+            <div class="p-4 grid grid-cols-2 gap-3">
+                <!-- Heart Bubble -->
+                <div class="bg-[#FF90E8] neo-border p-2 flex justify-center items-center relative">
+                    <svg class="w-8 h-8 text-[#111827]" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                    <div class="absolute -bottom-2 -left-2 w-0 h-0 border-l-[10px] border-l-transparent border-t-[10px] border-t-[#111827] border-r-[10px] border-r-transparent transform -rotate-45"></div>
+                </div>
+                <!-- Folder -->
+                <div class="bg-white neo-border p-2 flex flex-col gap-1">
+                    <div class="w-1/2 h-2 bg-[#111827]"></div>
+                    <div class="w-full h-8 bg-[#FFD500] neo-border"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Element 4: Toggle Switches (Bottom Right) -->
+        <div class="absolute bottom-[15%] right-[2%] md:right-[5%] flex flex-col gap-3 anim-float" style="animation-delay: 2s;">
+            <div class="w-24 md:w-32 h-10 md:h-12 bg-white rounded-full neo-border neo-shadow relative flex items-center p-1">
+                <div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-[#9D4EDD] neo-border"></div>
+            </div>
+            <div class="w-24 md:w-32 h-10 md:h-12 bg-white rounded-full neo-border neo-shadow relative flex items-center justify-end p-1">
+                <div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-[#00A36C] neo-border"></div>
+            </div>
+        </div>
+
+        <!-- Element 5: Floating Arrow Cursor (Center Right) -->
+        <svg class="absolute top-[40%] right-[10%] w-16 h-16 md:w-24 md:h-24 text-[#FF90E8] anim-float-fast transform rotate-[25deg] drop-shadow-[6px_6px_0px_#111827]" fill="currentColor" stroke="#111827" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M5.5 3.21V20.8c0 .45.54.67.85.35l4.86-4.86 3.66 7.68c.16.34.56.49.9.33l2.45-1.16c.34-.16.49-.56.33-.9l-3.72-7.79 6.22-.05c.45 0 .67-.54.35-.85L6.35 2.85c-.23-.23-.6-.23-.85 0z"/>
+        </svg>
+
+        <!-- Element 6: Asterisk (Center Left) -->
+        <svg class="absolute top-[42%] left-[4%] w-20 h-20 md:w-24 md:h-24 anim-spin hidden md:block" style="filter: drop-shadow(6px 6px 0px #111827);" viewBox="0 0 100 100" overflow="visible">
+             <path d="M 42 5 L 58 5 L 58 35 L 84 20 L 92 34 L 66 49 L 92 64 L 84 78 L 58 63 L 58 93 L 42 93 L 42 63 L 16 78 L 8 64 L 34 49 L 8 34 L 16 20 L 42 35 Z" fill="#00A36C" stroke="#111827" stroke-width="6" stroke-linejoin="round" />
+        </svg>
     </div>
 
-    <!-- 🟢 Navbar -->
-    <nav class="bg-[#FDF8EE] shadow-sm border-b-[4px] border-[#111827] sticky top-0 z-40">
+    <!-- 🟢 Navbar (Vibrant Yellow) -->
+    <nav class="bg-[#FFD500] shadow-sm border-b-[4px] border-[#111827] sticky top-0 z-40">
         <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <!-- Logo & Status -->
-                <div class="flex items-center gap-3 min-w-0">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/4/4d/Hs_logo_mid.png" alt="Logo" class="w-9 h-9 object-contain bg-white rounded-full border-2 border-[#111827] shadow-[2px_2px_0px_#111827]">
-                    <span class="text-xl sm:text-2xl font-black text-[#111827] tracking-tight truncate uppercase">HongSonEduTrack</span>
-                    <div id="cloud-status" class="hidden sm:flex items-center gap-1.5 px-3 py-1 bg-white rounded-md border-2 border-[#111827] text-[10px] sm:text-xs font-black text-[#111827] whitespace-nowrap shadow-[2px_2px_0px_#111827]">
-                        ☁️ <span class="hidden md:inline">ออฟไลน์</span>
+            <div class="flex justify-between items-center h-16 sm:h-20">
+                <div class="flex items-center gap-2 sm:gap-3 min-w-0">
+                    <div class="w-9 h-9 sm:w-12 sm:h-12 bg-white border-[3px] border-[#111827] rounded-none shadow-[3px_3px_0px_#111827] flex items-center justify-center overflow-hidden flex-shrink-0">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/4/4d/Hs_logo_mid.png" alt="Logo" class="w-full h-full object-contain p-0.5">
+                    </div>
+                    
+                    <!-- 🎨 Typography HONGSONEDUTRACK แบบเท่ๆ -->
+                    <div class="flex items-center tracking-tighter uppercase font-black truncate">
+                        <span class="text-[14px] sm:text-2xl md:text-3xl text-[#111827]" style="text-shadow: 2px 2px 0px white;">HONGSON</span>
+                        <span class="mx-1 sm:mx-1.5 px-1 sm:px-2 py-0 sm:py-0.5 bg-[#FF90E8] text-[#111827] border-[2px] sm:border-[3px] border-[#111827] shadow-[2px_2px_0px_#111827] text-[12px] sm:text-xl md:text-2xl transform -rotate-3 hover:rotate-3 transition-transform">EDU</span>
+                        <span class="text-[14px] sm:text-2xl md:text-3xl text-[#2176FF]" style="text-shadow: 1px 1px 0px #111827, 2px 2px 0px #111827;">TRACK</span>
+                    </div>
+
+                    <div id="cloud-status" class="hidden md:flex items-center gap-1.5 px-3 py-1 bg-white border-[3px] border-[#111827] text-xs font-black text-[#111827] whitespace-nowrap shadow-[3px_3px_0px_#111827] ml-2">
+                        ☁️ <span>ออฟไลน์</span>
                     </div>
                 </div>
                 
-                <!-- Navigation Buttons -->
-                <div class="flex items-center space-x-2">
-                    <button onclick="switchView('student')" id="btn-nav-student" class="px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-black transition-all bg-[#2C4A3E] text-white neo-border neo-shadow neo-btn">
+                <div class="flex items-center space-x-1 sm:space-x-3 flex-shrink-0 ml-2">
+                    <button onclick="switchView('student')" id="btn-nav-student" class="px-2 py-1.5 sm:px-5 sm:py-2.5 rounded-none text-[10px] sm:text-sm font-black bg-[#111827] text-white neo-border neo-shadow-sm neo-btn uppercase tracking-wider">
                         👨‍🎓 <span class="hidden sm:inline ml-1">นักเรียน</span>
                     </button>
-                    <button onclick="switchView('dashboard')" id="btn-nav-dashboard" class="px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-black transition-all bg-white text-[#111827] neo-border neo-shadow neo-btn hover:bg-gray-100">
+                    <button onclick="switchView('dashboard')" id="btn-nav-dashboard" class="px-2 py-1.5 sm:px-5 sm:py-2.5 rounded-none text-[10px] sm:text-sm font-black bg-white text-[#111827] neo-border neo-shadow-sm neo-btn hover:bg-[#FF90E8] uppercase tracking-wider">
                         📊 <span class="hidden sm:inline ml-1">แดชบอร์ด</span>
                     </button>
-                    <button onclick="checkAdminAccess()" id="btn-nav-teacher" class="px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-black transition-all bg-white text-[#111827] neo-border neo-shadow neo-btn hover:bg-gray-100">
+                    <button onclick="checkAdminAccess()" id="btn-nav-teacher" class="px-2 py-1.5 sm:px-5 sm:py-2.5 rounded-none text-[10px] sm:text-sm font-black bg-white text-[#111827] neo-border neo-shadow-sm neo-btn hover:bg-[#00A36C] hover:text-white uppercase tracking-wider">
                         ⚙️ <span class="hidden sm:inline ml-1">ระบบครู</span>
                     </button>
                 </div>
@@ -125,372 +193,374 @@
     </nav>
 
     <!-- 🟢 Main Content -->
-    <main class="flex-grow max-w-[1400px] mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 sm:py-10 z-10 flex flex-col">
+    <main class="flex-grow max-w-[1400px] mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 sm:py-12 z-10 flex flex-col">
         
-        <!-- ================= 1. STUDENT VIEW (HERO SECTION) ================= -->
+        <!-- ================= 1. STUDENT VIEW ================= -->
         <div id="student-view" class="space-y-6 flex flex-col max-w-3xl mx-auto w-full flex-grow justify-center">
             
-            <div id="loading-overlay" class="hidden bg-white p-8 rounded-xl neo-border neo-shadow text-center flex-col items-center justify-center min-h-[400px] transition-all overflow-hidden">
-                <div class="flex justify-center items-center h-24 sm:h-32 mb-6">
+            <div id="loading-overlay" class="hidden bg-white p-6 sm:p-8 rounded-none neo-border neo-shadow text-center flex-col items-center justify-center min-h-[300px] sm:min-h-[400px] transition-all overflow-hidden relative">
+                <!-- Window UI Header for loading box -->
+                <div class="absolute top-0 left-0 right-0 border-b-[4px] border-[#111827] bg-[#2176FF] h-8 flex justify-between items-center px-3">
+                    <span class="text-[10px] font-black uppercase text-white tracking-wider">Loading.exe</span>
+                </div>
+                <div class="flex justify-center items-center h-20 sm:h-32 mb-6 mt-6">
                     <div class="loader">
                         <div class="form1"><div class="square"></div><div class="square"></div></div>
                         <div class="form2"><div class="square"></div><div class="square"></div></div>
                     </div>
                 </div>
-                <h2 class="text-xl sm:text-2xl font-black text-[#111827] mb-2 relative z-10">กำลังตรวจสอบข้อมูล...</h2>
-                <p class="text-gray-600 font-bold text-xs sm:text-sm relative z-10 px-4">กรุณารอสักครู่ ระบบกำลังดึงข้อมูลล่าสุดจากเซิร์ฟเวอร์</p>
+                <h2 class="text-xl sm:text-3xl font-black text-[#111827] mb-2 relative z-10 uppercase">กำลังโหลดข้อมูล</h2>
+                <p class="text-[#2176FF] font-black text-xs sm:text-sm relative z-10 px-4 uppercase tracking-widest">PLEASE WAIT...</p>
             </div>
 
-            <!-- Neo-Brutalism Search Panel (Matches Image) -->
-            <div id="student-search-panel" class="bg-white p-8 sm:p-12 rounded-none border-[4px] border-[#111827] shadow-[8px_8px_0px_#111827] text-center transition-all relative mt-16">
-                <!-- Floating Top Icon -->
-                <div class="absolute -top-10 left-1/2 transform -translate-x-1/2 w-[80px] h-[80px] bg-[#FACC15] border-[4px] border-[#111827] rounded-2xl flex items-center justify-center shadow-[4px_4px_0px_#111827]">
-                    <svg class="w-10 h-10 text-[#111827]" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+            <div id="student-search-panel" class="bg-white p-6 sm:p-12 rounded-none border-[4px] border-[#111827] shadow-[8px_8px_0px_#111827] sm:shadow-[12px_12px_0px_#111827] text-center transition-all relative mt-8 sm:mt-0">
+                <!-- Window UI Header -->
+                <div class="absolute top-0 left-0 right-0 border-b-[4px] border-[#111827] bg-[#FFD500] h-8 flex justify-between items-center px-3">
+                    <span class="text-[10px] font-black uppercase tracking-wider">Search_System.exe</span>
+                    <div class="flex gap-1.5">
+                        <div class="w-3 h-3 border-[2.5px] border-[#111827] bg-white"></div>
+                        <div class="w-3 h-3 border-[2.5px] border-[#111827] bg-[#FF4A1C]"></div>
+                    </div>
+                </div>
+
+                <!-- แก้ไขให้โลโก้อยู่ตรงกลางเป๊ะ โดยแยก Layer แอนิเมชันออก -->
+                <div class="absolute -top-10 sm:-top-12 left-1/2 transform -translate-x-1/2 z-10">
+                    <div class="w-[70px] h-[70px] sm:w-[90px] sm:h-[90px] bg-[#9D4EDD] border-[4px] border-[#111827] rounded-none flex items-center justify-center shadow-[6px_6px_0px_#111827] anim-float-fast">
+                        <svg class="w-8 h-8 sm:w-12 sm:h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                    </div>
                 </div>
                 
-                <h2 class="text-2xl sm:text-4xl font-black text-[#111827] mt-6 mb-3 tracking-wide">เช็คคะแนนและงานที่ต้องส่ง</h2>
-                <p class="text-gray-600 text-sm sm:text-base font-bold mb-8">สแกน QR Code เพื่อเข้าระบบ หรือกรอกรหัสนักเรียน</p>
+                <h2 class="text-2xl sm:text-5xl font-black text-[#111827] mt-10 sm:mt-8 mb-2 sm:mb-4 tracking-tight uppercase">เช็คคะแนน</h2>
+                <p class="text-[#2176FF] text-sm sm:text-lg font-black mb-6 sm:mb-10 uppercase tracking-widest">ENTER STUDENT ID OR SCAN QR</p>
                 
-                <div class="flex flex-col sm:flex-row justify-center items-stretch gap-4 max-w-lg mx-auto">
-                    <input type="number" id="search-std-id" placeholder="รหัสนักเรียน 5 หลัก" class="w-full sm:w-2/3 border-[3px] border-[#111827] bg-[#F3F4F6] rounded-none px-5 py-4 text-center text-lg sm:text-xl font-bold text-[#111827] focus:outline-none focus:bg-white placeholder:text-gray-400 transition-colors shadow-[4px_4px_0px_#111827] focus:shadow-[2px_2px_0px_#111827] focus:translate-y-0.5 focus:translate-x-0.5">
-                    <button onclick="searchStudent()" class="w-full sm:w-1/3 bg-[#2C4A3E] text-white border-[3px] border-[#111827] px-6 py-4 rounded-none font-black text-xl shadow-[4px_4px_0px_#111827] hover:translate-y-1 hover:translate-x-1 hover:shadow-[0px_0px_0px_#111827] active:bg-[#1e332b] transition-all">
+                <div class="flex flex-col sm:flex-row justify-center items-stretch gap-0 max-w-lg mx-auto border-[4px] border-[#111827] shadow-[6px_6px_0px_#111827] focus-within:shadow-[2px_2px_0px_#111827] transition-shadow">
+                    <input type="number" id="search-std-id" placeholder="รหัสนักเรียน 5 หลัก" class="w-full sm:w-2/3 bg-[#F3F4F6] rounded-none px-4 py-4 sm:px-5 sm:py-5 text-center text-lg sm:text-2xl font-black text-[#111827] focus:outline-none focus:bg-white placeholder:text-gray-400 border-b-[4px] sm:border-b-0 sm:border-r-[4px] border-[#111827]">
+                    <button onclick="searchStudent()" class="w-full sm:w-1/3 bg-[#00A36C] text-white px-4 py-4 sm:px-6 sm:py-5 rounded-none font-black text-xl sm:text-2xl hover:bg-[#008f5d] transition-colors uppercase">
                         ค้นหา
                     </button>
                 </div>
-                <div id="student-error" class="hidden mt-6 p-4 bg-red-100 text-red-700 border-[3px] border-[#111827] shadow-[4px_4px_0px_#111827] text-sm font-bold animate-pulse">
-                    ❌ ไม่พบข้อมูลนักเรียน กรุณาตรวจสอบรหัสอีกครั้ง
+                <div id="student-error" class="hidden mt-6 p-4 bg-[#FF90E8] text-[#111827] border-[4px] border-[#111827] shadow-[4px_4px_0px_#111827] text-sm sm:text-base font-black animate-pulse uppercase">
+                    ❌ ERROR: ไม่พบข้อมูลนักเรียน
                 </div>
             </div>
 
-            <!-- Student Result Panel (Unchanged layout, added Neo-borders) -->
             <div id="student-result" class="hidden space-y-6 transition-all">
                 
-                <div class="bg-white p-6 sm:p-8 rounded-xl neo-border neo-shadow relative overflow-hidden">
-                    <div class="absolute top-0 right-0 w-32 h-32 bg-[#fef08a] rounded-bl-full -z-10 border-l-[3px] border-b-[3px] border-[#111827]"></div>
+                <div class="bg-white p-6 sm:p-8 rounded-none neo-border neo-shadow relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-[#FFD500] border-l-[4px] border-b-[4px] border-[#111827] -z-10" style="clip-path: polygon(100% 0, 0 0, 100% 100%);"></div>
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-5 z-10">
-                        <div class="flex items-center gap-4 sm:gap-5 w-full sm:w-auto">
-                            <div class="relative">
-                                <img id="res-avatar" src="" class="w-20 h-20 sm:w-24 sm:h-24 rounded-xl object-cover border-[3px] border-[#111827] shadow-[4px_4px_0px_#111827] flex-shrink-0 bg-gray-50" title="คลิกเพื่อดูรูปใหญ่">
+                        <div class="flex items-center gap-4 sm:gap-6 w-full sm:w-auto">
+                            <div class="relative inline-block group">
+                                <img id="res-avatar" src="" class="w-20 h-20 sm:w-28 sm:h-28 rounded-none object-cover border-[4px] border-[#111827] shadow-[6px_6px_0px_#111827] flex-shrink-0 bg-[#FDF8EE]" title="คลิกเพื่อดูรูปใหญ่">
+                                <button onclick="promptStudentAvatarUpdate(); event.stopPropagation();" class="absolute -bottom-3 -right-3 bg-[#9D4EDD] text-white border-[3px] border-[#111827] w-10 h-10 rounded-none flex items-center justify-center shadow-[4px_4px_0px_#111827] hover:-translate-y-1 hover:translate-x-1 transition-transform z-20 text-sm font-black" title="อัปเดตรูปโปรไฟล์ (URL)">✏️</button>
                             </div>
                             <div class="flex-grow">
-                                <div class="inline-block px-3 py-1 bg-[#D97443] text-white border-2 border-[#111827] text-[10px] sm:text-xs font-black rounded mb-2 shadow-[2px_2px_0px_#111827]" id="res-class">ห้อง ม.4/1 • เลขที่ 1</div>
-                                <h3 id="res-name" class="text-xl sm:text-2xl font-black text-[#111827] leading-tight">ชื่อ-นามสกุล</h3>
-                                <p class="text-gray-600 text-xs sm:text-sm mt-1 font-bold">รหัสประจำตัว: <span id="res-id" class="text-[#111827]">12345</span></p>
+                                <div class="inline-block px-3 py-1 bg-[#2176FF] text-white border-[3px] border-[#111827] text-[10px] sm:text-xs font-black rounded-none mb-2 shadow-[3px_3px_0px_#111827] uppercase tracking-wider" id="res-class">CLASS 4/1 • NO.1</div>
+                                <h3 id="res-name" class="text-2xl sm:text-3xl font-black text-[#111827] leading-tight uppercase">ชื่อ-นามสกุล</h3>
+                                <p class="text-[#FF4A1C] text-xs sm:text-sm mt-1 font-black uppercase tracking-widest">ID: <span id="res-id" class="text-[#111827]">12345</span></p>
                             </div>
                         </div>
-                        <div class="flex flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-center w-full sm:w-auto gap-4 sm:gap-3 pt-4 sm:pt-0">
-                            <button onclick="logoutStudent()" class="text-[#111827] hover:text-white bg-white hover:bg-red-500 border-2 border-[#111827] shadow-[2px_2px_0px_#111827] text-xs font-black px-4 py-2 rounded transition-colors flex items-center gap-1 active:translate-y-0.5 active:shadow-none">
-                                ออกจากระบบ
+                        <div class="flex flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-center w-full sm:w-auto gap-4 pt-4 sm:pt-0">
+                            <button onclick="logoutStudent()" class="text-[#111827] hover:text-white bg-[#FF90E8] border-[3px] border-[#111827] shadow-[4px_4px_0px_#111827] text-[10px] sm:text-xs font-black px-4 py-2 rounded-none transition-transform hover:-translate-y-1 uppercase tracking-wider active:translate-y-1 active:shadow-none">
+                                LOGOUT
                             </button>
-                            <div class="bg-[#2C4A3E] text-white border-[3px] border-[#111827] px-6 py-2 rounded-xl text-center shadow-[4px_4px_0px_#111827]">
-                                <div class="text-[10px] sm:text-xs font-black mb-0.5 uppercase">เกรดของคุณ</div>
-                                <div id="res-grade" class="text-3xl sm:text-4xl font-black leading-none text-[#FACC15]">4.0</div>
+                            <div class="bg-[#111827] text-[#FFD500] border-[4px] border-[#FFD500] px-6 py-2 rounded-none text-center shadow-[6px_6px_0px_#FFD500] transform rotate-2 hover:rotate-0 transition-transform">
+                                <div class="text-[10px] sm:text-xs font-black mb-0.5 uppercase tracking-widest text-white">YOUR GRADE</div>
+                                <div id="res-grade" class="text-4xl sm:text-5xl font-black leading-none drop-shadow-[2px_2px_0px_white]">4.0</div>
                             </div>
                         </div>
                     </div>
                 </div>
                 
-                <div class="bg-white p-6 sm:p-8 rounded-xl neo-border neo-shadow">
-                    <div class="flex justify-between items-end mb-4">
-                        <h4 class="text-lg font-black text-[#111827]">สรุปคะแนน <span class="text-gray-500 font-bold text-sm">(เต็ม 100)</span></h4>
-                        <div class="text-2xl sm:text-3xl font-black text-[#2C4A3E]" id="res-score-total">0</div>
+                <div class="bg-white p-6 sm:p-8 rounded-none neo-border neo-shadow">
+                    <div class="flex justify-between items-end mb-4 sm:mb-6 border-b-[4px] border-[#111827] pb-3">
+                        <h4 class="text-lg sm:text-2xl font-black text-[#111827] uppercase">TOTAL SCORE <span class="text-[#2176FF] font-black text-sm sm:text-base">(MAX 100)</span></h4>
+                        <div class="text-3xl sm:text-5xl font-black text-[#FF4A1C]" id="res-score-total">0</div>
                     </div>
-                    <div class="mb-6">
-                        <div class="w-full bg-gray-100 rounded-none h-4 border-2 border-[#111827] shadow-[inset_2px_2px_0px_rgba(0,0,0,0.2)]">
-                            <div id="res-progress-bar" class="progress-bar-fill h-full border-r-2 border-[#111827]" style="width: 0%; background-color: #2C4A3E;"></div>
+                    <div class="mb-6 sm:mb-8">
+                        <div class="w-full bg-[#f1f5f9] rounded-none h-6 sm:h-8 border-[4px] border-[#111827] shadow-[inset_4px_4px_0px_rgba(0,0,0,0.15)] relative overflow-hidden">
+                            <div id="res-progress-bar" class="progress-bar-fill h-full border-r-[4px] border-[#111827] relative" style="width: 0%; background-color: #00A36C;">
+                                <!-- Optional: striped pattern for progress bar -->
+                                <div class="absolute inset-0 opacity-20" style="background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, #111827 10px, #111827 20px);"></div>
+                            </div>
                         </div>
-                        <div class="flex justify-between text-[10px] font-black text-gray-500 mt-2 px-1">
+                        <div class="flex justify-between text-xs sm:text-sm font-black text-[#111827] mt-2 px-1">
                             <span>0</span><span>50</span><span>80</span><span>100</span>
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
-                        <div class="bg-[#f8fafc] p-3 rounded-lg border-2 border-[#111827] shadow-[2px_2px_0px_#111827] text-center">
-                            <div class="text-[10px] text-gray-600 mb-1 font-black uppercase">คะแนนเก็บ</div>
-                            <div id="res-score-assign" class="text-xl font-black text-[#111827]">0</div>
+                    <div class="grid grid-cols-2 md:grid-cols-5 gap-3 sm:gap-4">
+                        <div class="bg-[#f8fafc] p-3 sm:p-4 rounded-none border-[3px] border-[#111827] shadow-[4px_4px_0px_#111827] text-center transform hover:-translate-y-1 transition-transform">
+                            <div class="text-[10px] sm:text-xs text-[#2176FF] mb-1 font-black uppercase tracking-wider">คะแนนเก็บ</div>
+                            <div id="res-score-assign" class="text-2xl sm:text-3xl font-black text-[#111827]">0</div>
                         </div>
-                        <div class="bg-[#fef08a] p-3 rounded-lg border-2 border-[#111827] shadow-[2px_2px_0px_#111827] text-center">
-                            <div class="text-[10px] text-[#111827] mb-1 font-black uppercase">จิตพิสัย</div>
-                            <div id="res-score-att" class="text-xl font-black text-[#111827]">0</div>
+                        <div class="bg-[#FFD500] p-3 sm:p-4 rounded-none border-[3px] border-[#111827] shadow-[4px_4px_0px_#111827] text-center transform hover:-translate-y-1 transition-transform">
+                            <div class="text-[10px] sm:text-xs text-[#111827] mb-1 font-black uppercase tracking-wider">จิตพิสัย</div>
+                            <div id="res-score-att" class="text-2xl sm:text-3xl font-black text-[#111827]">0</div>
                         </div>
-                        <div class="bg-[#fecaca] p-3 rounded-lg border-2 border-[#111827] shadow-[2px_2px_0px_#111827] text-center">
-                            <div class="text-[10px] text-[#111827] mb-1 font-black uppercase">กลางภาค</div>
-                            <div id="res-score-mid" class="text-xl font-black text-[#111827]">0</div>
+                        <div class="bg-[#FF90E8] p-3 sm:p-4 rounded-none border-[3px] border-[#111827] shadow-[4px_4px_0px_#111827] text-center transform hover:-translate-y-1 transition-transform">
+                            <div class="text-[10px] sm:text-xs text-[#111827] mb-1 font-black uppercase tracking-wider">กลางภาค</div>
+                            <div id="res-score-mid" class="text-2xl sm:text-3xl font-black text-[#111827]">0</div>
                         </div>
-                        <div class="bg-[#bfdbfe] p-3 rounded-lg border-2 border-[#111827] shadow-[2px_2px_0px_#111827] text-center">
-                            <div class="text-[10px] text-[#111827] mb-1 font-black uppercase">ปลายภาค</div>
-                            <div id="res-score-fin" class="text-xl font-black text-[#111827]">0</div>
+                        <div class="bg-[#2176FF] p-3 sm:p-4 rounded-none border-[3px] border-[#111827] shadow-[4px_4px_0px_#111827] text-center transform hover:-translate-y-1 transition-transform">
+                            <div class="text-[10px] sm:text-xs text-white mb-1 font-black uppercase tracking-wider">ปลายภาค</div>
+                            <div id="res-score-fin" class="text-2xl sm:text-3xl font-black text-white">0</div>
                         </div>
-                        <div class="bg-[#D97443] p-3 rounded-lg border-2 border-[#111827] shadow-[2px_2px_0px_#111827] text-center col-span-2 md:col-span-1">
-                            <div class="text-[10px] text-white mb-1 font-black uppercase">ดาวพิเศษ 🌟</div>
-                            <div id="res-score-bonus" class="text-xl font-black text-white">+0</div>
+                        <div class="bg-[#FF4A1C] p-3 sm:p-4 rounded-none border-[3px] border-[#111827] shadow-[4px_4px_0px_#111827] text-center col-span-2 md:col-span-1 transform hover:-translate-y-1 transition-transform">
+                            <div class="text-[10px] sm:text-xs text-white mb-1 font-black uppercase tracking-wider">BONUS 🌟</div>
+                            <div id="res-score-bonus" class="text-2xl sm:text-3xl font-black text-[#FFD500]" style="text-shadow: 2px 2px 0px #111827;">+0</div>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-white p-6 sm:p-8 rounded-xl neo-border neo-shadow">
-                    <h4 class="text-lg font-black text-[#111827] mb-4 border-b-4 border-[#111827] pb-2 inline-block">รายละเอียดชิ้นงาน</h4>
-                    <div id="res-tasks-list" class="space-y-3 mt-2">
-                        <!-- Tasks Injected by JS -->
-                    </div>
+                <div class="bg-white p-6 sm:p-8 rounded-none neo-border neo-shadow">
+                    <h4 class="text-lg sm:text-xl font-black text-[#111827] mb-4 sm:mb-6 border-b-[4px] border-[#111827] pb-2 inline-block uppercase bg-[#FFD500] px-4">TASK DETAILS</h4>
+                    <div id="res-tasks-list" class="space-y-3 sm:space-y-4 mt-2"></div>
                 </div>
             </div>
         </div>
 
         <!-- ================= 2. DASHBOARD VIEW ================= -->
         <div id="dashboard-view" class="space-y-6 hidden w-full">
-            <div class="bg-white p-5 sm:p-6 rounded-xl neo-border neo-shadow flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                <div>
-                    <h2 class="text-xl sm:text-2xl font-black text-[#111827]">สรุปภาพรวมระดับชั้น</h2>
-                    <p class="text-xs sm:text-sm text-gray-600 font-bold mt-1">สถิติและอันดับคะแนนของนักเรียนในห้อง</p>
+            <div class="bg-white p-6 rounded-none neo-border neo-shadow flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 relative overflow-hidden">
+                <div class="absolute right-0 top-0 w-16 h-16 bg-[#FF90E8] border-b-[4px] border-l-[4px] border-[#111827] -z-0"></div>
+                <div class="relative z-10">
+                    <h2 class="text-2xl sm:text-3xl font-black text-[#111827] uppercase">CLASS OVERVIEW</h2>
+                    <p class="text-sm text-[#FF4A1C] font-black mt-1 uppercase tracking-widest">RANKING & STATISTICS</p>
                 </div>
-                <div class="w-full sm:w-auto flex items-center bg-[#FACC15] p-2 rounded-lg border-2 border-[#111827] shadow-[2px_2px_0px_#111827]">
-                    <label class="text-xs font-black text-[#111827] px-2 hidden sm:inline uppercase">ห้อง:</label>
-                    <select id="dash-class-selector" onchange="renderDashboard()" class="w-full sm:w-auto bg-transparent border-none focus:ring-0 text-sm font-black text-[#111827] cursor-pointer outline-none"></select>
+                <div class="w-full sm:w-auto flex items-center bg-[#FFD500] p-3 rounded-none border-[4px] border-[#111827] shadow-[4px_4px_0px_#111827] relative z-10">
+                    <label class="text-xs font-black text-[#111827] px-2 hidden sm:inline uppercase">SELECT CLASS:</label>
+                    <select id="dash-class-selector" onchange="renderDashboard()" class="w-full sm:w-auto bg-transparent border-none focus:ring-0 text-base font-black text-[#111827] cursor-pointer outline-none uppercase"></select>
                 </div>
             </div>
 
             <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6" id="dash-stats-grid">
-                <div class="bg-[#bbf7d0] p-4 sm:p-6 rounded-xl neo-border neo-shadow text-center">
-                    <p class="text-xs sm:text-sm text-[#111827] mb-1 font-black uppercase">คะแนนเฉลี่ยห้อง</p>
-                    <h3 class="text-3xl sm:text-4xl font-black text-[#111827]" id="stat-avg">0</h3>
+                <div class="bg-[#00A36C] p-6 rounded-none neo-border neo-shadow text-center">
+                    <p class="text-xs sm:text-sm text-white mb-2 font-black uppercase tracking-wider">AVERAGE</p>
+                    <h3 class="text-4xl sm:text-5xl font-black text-white drop-shadow-[3px_3px_0px_#111827]" id="stat-avg">0</h3>
                 </div>
-                <div class="bg-[#bfdbfe] p-4 sm:p-6 rounded-xl neo-border neo-shadow text-center">
-                    <p class="text-xs sm:text-sm text-[#111827] mb-1 font-black uppercase">คะแนนสูงสุด</p>
-                    <h3 class="text-3xl sm:text-4xl font-black text-[#111827]" id="stat-high">0</h3>
+                <div class="bg-[#2176FF] p-6 rounded-none neo-border neo-shadow text-center">
+                    <p class="text-xs sm:text-sm text-white mb-2 font-black uppercase tracking-wider">HIGHEST</p>
+                    <h3 class="text-4xl sm:text-5xl font-black text-white drop-shadow-[3px_3px_0px_#111827]" id="stat-high">0</h3>
                 </div>
-                <div class="bg-[#fed7aa] p-4 sm:p-6 rounded-xl neo-border neo-shadow text-center col-span-2 sm:col-span-1">
-                    <p class="text-xs sm:text-sm text-[#111827] mb-1 font-black uppercase">เกรด 4.0 จำนวน</p>
-                    <h3 class="text-3xl sm:text-4xl font-black text-[#111827]" id="stat-grade4">0 <span class="text-xs sm:text-base font-bold text-[#111827]">คน</span></h3>
+                <div class="bg-[#9D4EDD] p-6 rounded-none neo-border neo-shadow text-center col-span-2 sm:col-span-1">
+                    <p class="text-xs sm:text-sm text-white mb-2 font-black uppercase tracking-wider">GRADE 4.0</p>
+                    <h3 class="text-4xl sm:text-5xl font-black text-[#FFD500] drop-shadow-[3px_3px_0px_#111827]" id="stat-grade4">0 <span class="text-sm sm:text-xl font-black text-white uppercase">students</span></h3>
                 </div>
             </div>
 
-            <div class="bg-white rounded-xl neo-border neo-shadow overflow-hidden">
-                <div class="p-4 border-b-[3px] border-[#111827] bg-[#F3F4F6] flex items-center gap-2">
-                    <span class="text-lg">🏆</span>
-                    <h3 class="font-black text-[#111827] text-sm sm:text-base uppercase">จัดอันดับคะแนนรวม (Ranking)</h3>
+            <div class="bg-white rounded-none neo-border neo-shadow overflow-hidden">
+                <div class="p-4 border-b-[4px] border-[#111827] bg-[#FFD500] flex items-center gap-3">
+                    <span class="text-2xl bg-white border-[3px] border-[#111827] rounded-none p-1 shadow-[2px_2px_0px_#111827]">🏆</span>
+                    <h3 class="font-black text-[#111827] text-lg sm:text-xl uppercase tracking-wider">LEADERBOARD</h3>
                 </div>
-                <div class="max-h-[70vh] overflow-y-auto custom-scrollbar">
+                <div class="max-h-[70vh] overflow-y-auto custom-scrollbar bg-[#f8fafc]">
                     <table class="w-full text-left min-w-[500px] border-separate border-spacing-0">
-                        <thead class="bg-[#111827] text-white text-[10px] sm:text-xs uppercase tracking-wider sticky top-0 z-20 shadow-md">
+                        <thead class="bg-[#111827] text-white text-[10px] sm:text-xs uppercase tracking-widest sticky top-0 z-20">
                             <tr>
-                                <th class="px-4 sm:px-6 py-4 font-black text-center w-16 border-b-[3px] border-[#111827]">อันดับ</th>
-                                <th class="px-2 py-4 w-16 text-center border-b-[3px] border-[#111827]">รูป</th>
-                                <th class="px-4 py-4 font-black border-b-[3px] border-[#111827]">รหัส</th>
-                                <th class="px-4 py-4 font-black border-b-[3px] border-[#111827]">ชื่อ-นามสกุล</th>
-                                <th class="px-4 py-4 font-black text-center border-b-[3px] border-[#111827]">คะแนน</th>
-                                <th class="px-4 sm:px-6 py-4 font-black text-center border-b-[3px] border-[#111827]">เกรด</th>
+                                <th class="px-4 sm:px-6 py-4 font-black text-center w-16 border-b-[4px] border-[#111827]">RANK</th>
+                                <th class="px-2 py-4 w-16 text-center border-b-[4px] border-[#111827]">AVATAR</th>
+                                <th class="px-4 py-4 font-black border-b-[4px] border-[#111827]">ID</th>
+                                <th class="px-4 py-4 font-black border-b-[4px] border-[#111827]">NAME</th>
+                                <th class="px-4 py-4 font-black text-center border-b-[4px] border-[#111827]">SCORE</th>
+                                <th class="px-4 sm:px-6 py-4 font-black text-center border-b-[4px] border-[#111827]">GRADE</th>
                             </tr>
                         </thead>
-                        <tbody id="dash-ranking-body" class="divide-y-[3px] divide-[#111827] text-sm bg-white">
-                        </tbody>
+                        <tbody id="dash-ranking-body" class="text-sm bg-white"></tbody>
                     </table>
                 </div>
             </div>
         </div>
 
         <!-- ================= 3. TEACHER / ADMIN VIEW ================= -->
-        <div id="teacher-view" class="space-y-4 hidden w-full">
-            
-            <div class="bg-white p-4 sm:p-5 rounded-xl neo-border neo-shadow flex flex-col lg:flex-row gap-4 lg:items-center justify-between">
-                <div class="flex items-center gap-3 w-full lg:w-auto bg-[#FACC15] p-2 rounded-lg border-[3px] border-[#111827] shadow-[2px_2px_0px_#111827]">
-                    <div class="w-8 h-8 rounded bg-white border-2 border-[#111827] flex items-center justify-center font-black">🏫</div>
-                    <select id="teacher-class-selector" onchange="changeAdminClass()" class="bg-transparent border-none focus:ring-0 font-black text-[#111827] text-sm sm:text-base w-full cursor-pointer outline-none"></select>
+        <div id="teacher-view" class="space-y-6 hidden w-full">
+            <div class="bg-white p-5 sm:p-6 rounded-none neo-border neo-shadow flex flex-col lg:flex-row gap-5 lg:items-center justify-between">
+                <div class="flex items-center gap-3 w-full lg:w-auto bg-[#FFD500] p-3 rounded-none border-[4px] border-[#111827] shadow-[4px_4px_0px_#111827]">
+                    <div class="w-10 h-10 bg-white border-[3px] border-[#111827] flex items-center justify-center font-black text-xl">🏫</div>
+                    <select id="teacher-class-selector" onchange="changeAdminClass()" class="bg-transparent border-none focus:ring-0 font-black text-[#111827] text-base sm:text-lg w-full cursor-pointer outline-none uppercase"></select>
                 </div>
                 
                 <div class="flex items-center gap-3 flex-wrap w-full lg:w-auto">
-                    <button onclick="openScannerModal()" class="flex-1 sm:flex-none justify-center bg-[#bbf7d0] text-[#111827] border-[3px] border-[#111827] px-4 py-2.5 rounded-lg text-xs sm:text-sm font-black transition-transform flex items-center gap-1.5 shadow-[3px_3px_0px_#111827] hover:translate-y-0.5 hover:shadow-[1px_1px_0px_#111827]">
-                        📷 สแกนตรวจด่วน
-                    </button>
-                    <button onclick="printQRCards()" class="flex-1 sm:flex-none justify-center bg-[#bfdbfe] text-[#111827] border-[3px] border-[#111827] px-4 py-2.5 rounded-lg text-xs sm:text-sm font-black transition-transform flex items-center gap-1.5 shadow-[3px_3px_0px_#111827] hover:translate-y-0.5 hover:shadow-[1px_1px_0px_#111827]">
-                        📇 พิมพ์บัตร QR
-                    </button>
-                    <button onclick="exportCSV()" class="flex-1 sm:flex-none justify-center bg-white text-[#111827] border-[3px] border-[#111827] px-4 py-2.5 rounded-lg text-xs sm:text-sm font-black transition-transform flex items-center gap-1.5 shadow-[3px_3px_0px_#111827] hover:translate-y-0.5 hover:shadow-[1px_1px_0px_#111827]">
-                        📥 โหลด CSV
-                    </button>
-                    <button onclick="toggleAdminTools()" class="w-full sm:w-auto justify-center bg-[#111827] text-white px-5 py-2.5 rounded-lg text-xs sm:text-sm font-black transition-transform flex items-center gap-2 shadow-[3px_3px_0px_#111827] hover:translate-y-0.5 hover:shadow-[1px_1px_0px_#111827]">
-                        ⚙️ ตั้งค่าข้อมูล
-                    </button>
+                    <button onclick="openScannerModal()" class="flex-1 sm:flex-none justify-center bg-[#FF90E8] text-[#111827] border-[4px] border-[#111827] px-4 py-3 rounded-none text-xs sm:text-sm font-black transition-transform flex items-center gap-2 shadow-[4px_4px_0px_#111827] hover:translate-y-1 hover:translate-x-1 hover:shadow-none uppercase">📷 QR SCAN</button>
+                    <button onclick="printQRCards()" class="flex-1 sm:flex-none justify-center bg-[#2176FF] text-white border-[4px] border-[#111827] px-4 py-3 rounded-none text-xs sm:text-sm font-black transition-transform flex items-center gap-2 shadow-[4px_4px_0px_#111827] hover:translate-y-1 hover:translate-x-1 hover:shadow-none uppercase">📇 PRINT CARDS</button>
+                    <button onclick="exportCSV()" class="flex-1 sm:flex-none justify-center bg-[#00A36C] text-white border-[4px] border-[#111827] px-4 py-3 rounded-none text-xs sm:text-sm font-black transition-transform flex items-center gap-2 shadow-[4px_4px_0px_#111827] hover:translate-y-1 hover:translate-x-1 hover:shadow-none uppercase">📥 CSV EXPORT</button>
+                    <button onclick="toggleAdminTools()" class="w-full sm:w-auto justify-center bg-[#111827] text-[#FFD500] px-6 py-3 rounded-none text-xs sm:text-sm font-black transition-transform flex items-center gap-2 shadow-[4px_4px_0px_#FFD500] hover:translate-y-1 hover:translate-x-1 hover:shadow-none uppercase tracking-wider">⚙️ SETTINGS</button>
                 </div>
             </div>
 
+            <!-- Admin Tools -->
             <div id="admin-tools-panel" class="hidden grid-cols-1 lg:grid-cols-3 gap-6 transition-all">
-                <div class="bg-white p-5 rounded-xl neo-border neo-shadow flex flex-col h-full">
-                    <h3 class="font-black text-[#111827] text-sm sm:text-base mb-4 uppercase border-b-[3px] border-[#111827] pb-2 inline-block">จัดการห้องเรียน</h3>
+                <div class="bg-[#FF90E8] p-6 rounded-none neo-border neo-shadow flex flex-col h-full">
+                    <h3 class="font-black text-[#111827] text-base sm:text-lg mb-4 uppercase border-b-[4px] border-[#111827] pb-2 inline-block bg-white px-2">CLASS MGR</h3>
                     <div class="flex gap-3 mt-auto">
-                        <button onclick="promptAddClass()" class="flex-1 bg-[#8F9E8B] text-white border-[3px] border-[#111827] px-3 py-2.5 rounded-lg text-xs sm:text-sm font-black shadow-[3px_3px_0px_#111827] hover:translate-y-0.5 hover:shadow-[0px_0px_0px_#111827]">+ เพิ่มห้อง</button>
-                        <button onclick="deleteCurrentClass()" class="flex-1 bg-[#fca5a5] text-[#111827] border-[3px] border-[#111827] px-3 py-2.5 rounded-lg text-xs sm:text-sm font-black shadow-[3px_3px_0px_#111827] hover:translate-y-0.5 hover:shadow-[0px_0px_0px_#111827]">ลบห้องนี้</button>
+                        <button onclick="promptAddClass()" class="flex-1 bg-[#111827] text-white border-[3px] border-[#111827] px-3 py-3 rounded-none text-xs sm:text-sm font-black shadow-[4px_4px_0px_white] hover:translate-y-1 hover:translate-x-1 hover:shadow-none uppercase">+ ADD</button>
+                        <button onclick="deleteCurrentClass()" class="flex-1 bg-white text-[#FF4A1C] border-[3px] border-[#111827] px-3 py-3 rounded-none text-xs sm:text-sm font-black shadow-[4px_4px_0px_#111827] hover:translate-y-1 hover:translate-x-1 hover:shadow-none uppercase">DELETE</button>
                     </div>
                 </div>
 
-                <div class="bg-white p-5 rounded-xl neo-border neo-shadow lg:col-span-2">
-                    <h3 class="font-black text-[#111827] text-sm sm:text-base mb-4 uppercase border-b-[3px] border-[#111827] pb-2 inline-block">เพิ่มนักเรียนใหม่</h3>
-                    <form id="form-add-student" onsubmit="addStudent(event)" class="space-y-3">
+                <div class="bg-[#2176FF] p-6 rounded-none neo-border neo-shadow lg:col-span-2">
+                    <h3 class="font-black text-[#111827] text-base sm:text-lg mb-4 uppercase border-b-[4px] border-[#111827] pb-2 inline-block bg-[#FFD500] px-2">NEW STUDENT</h3>
+                    <form id="form-add-student" onsubmit="addStudent(event)" class="space-y-4">
                         <div class="grid grid-cols-2 sm:grid-cols-12 gap-3">
-                            <input type="text" id="input-std-id" placeholder="รหัส(5หลัก)" required pattern="[0-9]{5}" maxlength="5" class="col-span-1 sm:col-span-2 border-[3px] border-[#111827] rounded-lg px-3 py-2 text-sm focus:bg-[#fef08a] outline-none font-bold">
-                            <input type="number" id="input-std-no" placeholder="เลขที่" required min="1" class="col-span-1 sm:col-span-2 border-[3px] border-[#111827] rounded-lg px-3 py-2 text-sm focus:bg-[#fef08a] outline-none font-bold">
-                            <select id="input-std-prefix" required class="col-span-2 sm:col-span-2 border-[3px] border-[#111827] rounded-lg px-3 py-2 text-sm focus:bg-[#fef08a] outline-none font-bold bg-white text-gray-700">
+                            <input type="text" id="input-std-id" placeholder="รหัส(5หลัก)" required pattern="[0-9]{5}" maxlength="5" class="col-span-1 sm:col-span-2 border-[4px] border-[#111827] rounded-none px-3 py-2.5 text-sm focus:bg-[#FFD500] outline-none font-black shadow-[4px_4px_0px_#111827] focus:shadow-none focus:translate-y-1 focus:translate-x-1 transition-all">
+                            <input type="number" id="input-std-no" placeholder="เลขที่" required min="1" class="col-span-1 sm:col-span-2 border-[4px] border-[#111827] rounded-none px-3 py-2.5 text-sm focus:bg-[#FFD500] outline-none font-black shadow-[4px_4px_0px_#111827] focus:shadow-none focus:translate-y-1 focus:translate-x-1 transition-all">
+                            <select id="input-std-prefix" required class="col-span-2 sm:col-span-2 border-[4px] border-[#111827] rounded-none px-3 py-2.5 text-sm focus:bg-[#FFD500] outline-none font-black bg-white text-gray-900 shadow-[4px_4px_0px_#111827] focus:shadow-none focus:translate-y-1 focus:translate-x-1 transition-all">
                                 <option value="">คำนำหน้า</option><option value="ด.ช.">ด.ช.</option><option value="ด.ญ.">ด.ญ.</option><option value="นาย">นาย</option><option value="นางสาว">นางสาว</option>
                             </select>
-                            <input type="text" id="input-std-fname" placeholder="ชื่อจริง" required class="col-span-1 sm:col-span-3 border-[3px] border-[#111827] rounded-lg px-3 py-2 text-sm focus:bg-[#fef08a] outline-none font-bold">
-                            <input type="text" id="input-std-lname" placeholder="นามสกุล" required class="col-span-1 sm:col-span-3 border-[3px] border-[#111827] rounded-lg px-3 py-2 text-sm focus:bg-[#fef08a] outline-none font-bold">
+                            <input type="text" id="input-std-fname" placeholder="ชื่อจริง" required class="col-span-1 sm:col-span-3 border-[4px] border-[#111827] rounded-none px-3 py-2.5 text-sm focus:bg-[#FFD500] outline-none font-black shadow-[4px_4px_0px_#111827] focus:shadow-none focus:translate-y-1 focus:translate-x-1 transition-all">
+                            <input type="text" id="input-std-lname" placeholder="นามสกุล" required class="col-span-1 sm:col-span-3 border-[4px] border-[#111827] rounded-none px-3 py-2.5 text-sm focus:bg-[#FFD500] outline-none font-black shadow-[4px_4px_0px_#111827] focus:shadow-none focus:translate-y-1 focus:translate-x-1 transition-all">
                         </div>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 items-center">
-                            <input type="url" id="input-std-avatar-url" placeholder="ลิงก์รูป (ถ้ามี)" class="w-full border-[3px] border-[#111827] rounded-lg px-3 py-2 text-sm focus:bg-[#fef08a] outline-none font-bold">
-                            <div class="w-full flex items-center bg-[#F3F4F6] rounded-lg border-[3px] border-[#111827] overflow-hidden">
-                                <span class="text-[10px] font-black text-[#111827] px-3 bg-[#E5E7EB] py-2.5 border-r-[3px] border-[#111827] uppercase">ไฟล์รูป</span>
-                                <input type="file" id="input-std-avatar-file" accept="image/*" class="w-full text-xs font-bold file:hidden px-2 py-1 outline-none cursor-pointer text-[#111827]">
-                            </div>
-                            <button type="submit" id="btn-add-student" class="w-full bg-[#2C4A3E] text-white border-[3px] border-[#111827] px-4 py-2.5 rounded-lg text-sm font-black transition-transform shadow-[3px_3px_0px_#111827] hover:translate-y-0.5 hover:shadow-[0px_0px_0px_#111827]">เพิ่มนักเรียน</button>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
+                            <input type="url" id="input-std-avatar-url" placeholder="URL รูปโปรไฟล์ (ถ้ามี)" class="w-full border-[4px] border-[#111827] rounded-none px-4 py-3 text-sm focus:bg-[#FFD500] outline-none font-black shadow-[4px_4px_0px_#111827] focus:shadow-none focus:translate-y-1 focus:translate-x-1 transition-all bg-white">
+                            <button type="submit" id="btn-add-student" class="w-full bg-[#FFD500] text-[#111827] border-[4px] border-[#111827] px-4 py-3 rounded-none text-base font-black transition-transform shadow-[4px_4px_0px_#111827] hover:translate-y-1 hover:translate-x-1 hover:shadow-none uppercase tracking-wider">ADD STUDENT</button>
                         </div>
                     </form>
-                    <div class="mt-5 flex flex-col sm:flex-row items-center justify-between bg-[#F3F4F6] p-3 rounded-lg border-[3px] border-[#111827] gap-3">
-                        <button type="button" onclick="downloadCsvTemplate()" class="text-xs text-[#111827] font-black flex items-center gap-1 hover:underline">
-                            📄 โหลดเทมเพลต CSV
-                        </button>
-                        <label class="text-xs bg-[#D97443] text-white border-[2px] border-[#111827] px-4 py-2 rounded-lg font-black cursor-pointer shadow-[2px_2px_0px_#111827] hover:translate-y-0.5 hover:shadow-none transition-transform uppercase">
-                            📥 นำเข้ารายชื่อ (CSV)
-                            <input type="file" id="import-csv-file" accept=".csv" class="hidden" onchange="importCSV(event)">
+                    <div class="mt-5 flex flex-col sm:flex-row items-center justify-between bg-white p-4 rounded-none border-[4px] border-[#111827] gap-4 shadow-[4px_4px_0px_#111827]">
+                        <button type="button" onclick="downloadCsvTemplate()" class="text-xs text-[#2176FF] font-black flex items-center gap-1 hover:underline uppercase tracking-wider">📄 CSV TEMPLATE</button>
+                        <label class="text-xs bg-[#111827] text-white border-[3px] border-[#111827] px-5 py-2.5 rounded-none font-black cursor-pointer shadow-[3px_3px_0px_#FF90E8] hover:translate-y-1 hover:translate-x-1 hover:shadow-none transition-transform uppercase tracking-wider">
+                            📥 IMPORT (CSV) <input type="file" id="import-csv-file" accept=".csv" class="hidden" onchange="importCSV(event)">
                         </label>
                     </div>
                 </div>
 
-                <div class="bg-white p-5 rounded-xl neo-border neo-shadow lg:col-span-3">
-                    <h3 class="font-black text-[#111827] text-sm sm:text-base mb-4 uppercase border-b-[3px] border-[#111827] pb-2 inline-block">เพิ่มชิ้นงานใหม่</h3>
+                <div class="bg-[#00A36C] p-6 rounded-none neo-border neo-shadow lg:col-span-3">
+                    <h3 class="font-black text-[#111827] text-base sm:text-lg mb-4 uppercase border-b-[4px] border-[#111827] pb-2 inline-block bg-white px-2">NEW TASK</h3>
                     <form id="form-add-task" onsubmit="addTask(event)" class="flex flex-col md:flex-row gap-5 items-start">
-                        <div class="w-full md:w-1/2 flex flex-col gap-3">
-                            <input type="text" id="input-task-name" placeholder="ชื่อชิ้นงาน (เช่น สมุดจด)" required class="w-full border-[3px] border-[#111827] rounded-lg px-4 py-2.5 text-sm focus:bg-[#fef08a] outline-none font-bold">
-                            <div class="flex gap-3">
-                                <input type="number" id="input-task-score" placeholder="คะแนนเต็ม" required min="1" class="w-1/2 border-[3px] border-[#111827] rounded-lg px-4 py-2.5 text-sm focus:bg-[#fef08a] outline-none font-bold">
-                                <button type="submit" class="w-1/2 bg-[#D97443] text-white border-[3px] border-[#111827] px-4 py-2.5 rounded-lg text-sm font-black transition-transform shadow-[3px_3px_0px_#111827] hover:translate-y-0.5 hover:shadow-none">เพิ่มงาน</button>
+                        <div class="w-full md:w-1/2 flex flex-col gap-4">
+                            <input type="text" id="input-task-name" placeholder="ชื่อชิ้นงาน (เช่น สมุดจด)" required class="w-full border-[4px] border-[#111827] rounded-none px-4 py-3 text-sm focus:bg-[#FFD500] outline-none font-black shadow-[4px_4px_0px_#111827] focus:shadow-none focus:translate-y-1 focus:translate-x-1 transition-all bg-white">
+                            <div class="flex gap-4">
+                                <input type="number" id="input-task-score" placeholder="คะแนนเต็ม" required min="1" class="w-1/2 border-[4px] border-[#111827] rounded-none px-4 py-3 text-sm focus:bg-[#FFD500] outline-none font-black shadow-[4px_4px_0px_#111827] focus:shadow-none focus:translate-y-1 focus:translate-x-1 transition-all bg-white">
+                                <button type="submit" class="w-1/2 bg-[#FFD500] text-[#111827] border-[4px] border-[#111827] px-4 py-3 rounded-none text-sm font-black transition-transform shadow-[4px_4px_0px_#111827] hover:translate-y-1 hover:translate-x-1 hover:shadow-none uppercase tracking-wider">ADD TASK</button>
                             </div>
                         </div>
-                        <div class="w-full md:w-1/2 border-[3px] border-[#111827] rounded-lg bg-white overflow-hidden max-h-[120px] flex flex-col">
-                            <div class="px-3 py-2 bg-[#F3F4F6] border-b-[3px] border-[#111827] flex justify-between items-center">
-                                <span class="text-[10px] font-black text-[#111827] uppercase">แจกจ่ายงานให้ห้อง:</span>
-                                <button type="button" onclick="toggleAllTaskClasses()" class="text-[10px] bg-white border-2 border-[#111827] text-[#111827] font-black px-2 py-0.5 rounded shadow-[1px_1px_0px_#111827] active:translate-y-0.5 active:shadow-none">เลือกทั้งหมด</button>
+                        <div class="w-full md:w-1/2 border-[4px] border-[#111827] rounded-none bg-white overflow-hidden h-[120px] flex flex-col shadow-[6px_6px_0px_#111827]">
+                            <div class="px-3 py-2 bg-[#F3F4F6] border-b-[4px] border-[#111827] flex justify-between items-center">
+                                <span class="text-[10px] font-black text-[#111827] uppercase tracking-wider">ASSIGN TO:</span>
+                                <button type="button" onclick="toggleAllTaskClasses()" class="text-[10px] bg-[#9D4EDD] border-[3px] border-[#111827] text-white font-black px-3 py-1 rounded-none shadow-[2px_2px_0px_#111827] active:translate-y-1 active:translate-x-1 active:shadow-none uppercase tracking-wider">SELECT ALL</button>
                             </div>
-                            <div id="task-class-checkboxes" class="p-2 overflow-y-auto custom-scrollbar flex flex-col gap-2 bg-white flex-grow">
-                                <!-- Checkboxes Injected -->
-                            </div>
+                            <div id="task-class-checkboxes" class="p-3 overflow-y-auto custom-scrollbar flex flex-col gap-2 bg-white flex-grow"></div>
                         </div>
                     </form>
                 </div>
             </div>
 
             <!-- Big Admin Table -->
-            <div class="bg-white rounded-xl neo-border neo-shadow overflow-hidden relative">
-                <div class="max-h-[70vh] overflow-y-auto custom-scrollbar p-0">
+            <div class="bg-white rounded-none neo-border neo-shadow overflow-hidden relative">
+                <div class="p-3 bg-[#FFD500] border-b-[4px] border-[#111827] flex justify-between items-center hidden lg:flex">
+                    <span class="font-black text-sm uppercase tracking-widest px-2">Master Scoreboard.exe</span>
+                    <div class="flex gap-1.5 mr-2">
+                        <div class="w-3 h-3 border-[2px] border-[#111827] bg-white"></div>
+                        <div class="w-3 h-3 border-[2px] border-[#111827] bg-white"></div>
+                        <div class="w-3 h-3 border-[2px] border-[#111827] bg-white"></div>
+                    </div>
+                </div>
+                <div class="max-h-[70vh] overflow-y-auto custom-scrollbar p-0 bg-[#f8fafc]">
                     <table class="w-full text-left border-separate border-spacing-0 min-w-[1000px]">
-                        <thead class="sticky top-0 z-20 shadow-md bg-white">
-                            <tr class="text-[10px] sm:text-xs text-center uppercase font-black text-[#111827]">
-                                <th colspan="4" class="p-2 sm:p-3 border-r-[3px] border-b-[3px] border-[#111827] bg-[#F3F4F6]">ข้อมูลนักเรียน</th>
-                                <th id="th-assign-group" class="p-2 sm:p-3 border-r-[3px] border-b-[3px] border-[#111827] bg-[#fef08a]">คะแนนเก็บชิ้นงาน (รวมดิบ)</th>
-                                <th colspan="3" class="p-2 sm:p-3 border-r-[3px] border-b-[3px] border-[#111827] bg-[#bfdbfe]">สอบ & พฤติกรรม</th>
-                                <th class="p-2 sm:p-3 border-r-[3px] border-b-[3px] border-[#111827] bg-[#fed7aa]">พิเศษ</th>
-                                <th colspan="3" class="p-2 sm:p-3 border-b-[3px] border-[#111827] bg-[#bbf7d0]">สรุปผล (100)</th>
+                        <thead class="sticky top-0 z-20 shadow-[0_4px_0_#111827] bg-white">
+                            <tr class="text-[10px] sm:text-xs text-center uppercase font-black text-[#111827] tracking-wider">
+                                <th colspan="4" class="p-2 sm:p-3 border-r-[4px] border-b-[4px] border-[#111827] bg-[#F3F4F6]">STUDENT INFO</th>
+                                <th id="th-assign-group" class="p-2 sm:p-3 border-r-[4px] border-b-[4px] border-[#111827] bg-[#FFD500]">TASKS (RAW)</th>
+                                <th colspan="3" class="p-2 sm:p-3 border-r-[4px] border-b-[4px] border-[#111827] bg-[#2176FF] text-white">EXAMS & ATT</th>
+                                <th class="p-2 sm:p-3 border-r-[4px] border-b-[4px] border-[#111827] bg-[#FF90E8]">SPECIAL</th>
+                                <th colspan="3" class="p-2 sm:p-3 border-b-[4px] border-[#111827] bg-[#00A36C] text-white">FINAL (100)</th>
                             </tr>
-                            <tr class="text-xs sm:text-sm" id="admin-table-head">
-                                <!-- Injected -->
-                            </tr>
+                            <tr class="text-xs sm:text-sm" id="admin-table-head"></tr>
                         </thead>
-                        <tbody id="admin-table-body" class="divide-y-[3px] divide-[#111827] text-sm font-medium bg-white">
-                            <!-- Injected -->
-                        </tbody>
+                        <tbody id="admin-table-body" class="text-sm font-bold bg-white"></tbody>
                     </table>
                 </div>
             </div>
         </div>
-
     </main>
 
-    <!-- 🎨 FOOTER (Neo-Brutalism Earth Tone) - ปรับปรุงตามคำขอ -->
-    <footer id="site-footer" class="mt-auto border-t-[4px] border-[#111827] bg-[#FACC15] relative z-40 transition-all">
-        <div class="max-w-[1400px] mx-auto grid grid-cols-1 md:grid-cols-3 divide-y-[4px] md:divide-y-0 md:divide-x-[4px] divide-[#111827]">
-            <!-- Col 1: Logo -->
-            <div class="py-5 px-6 md:py-6 md:px-8 flex items-center justify-center md:justify-start gap-4">
-                <div class="w-14 h-14 md:w-16 md:h-16 bg-white border-[3px] border-[#111827] rounded-full flex items-center justify-center text-2xl md:text-3xl shadow-[4px_4px_0px_#111827]">👦🏻</div>
-                <div>
-                    <h2 class="text-xl md:text-2xl font-black uppercase text-[#111827]">HongSonEduTrack</h2>
-                    <p class="font-black tracking-[0.2em] text-[10px] md:text-[11px] text-[#111827] mt-1">TRACK • LEARN • GROW</p>
+    <!-- 🎨 FOOTER (Neo-Brutalism Vibrant) -->
+    <footer id="main-footer" class="mt-auto border-t-[4px] border-[#111827] bg-[#2176FF] relative z-40 transition-all">
+        <div class="max-w-[1400px] mx-auto grid grid-cols-1 md:grid-cols-3 divide-y-[4px] md:divide-y-0 md:divide-x-[4px] divide-[#111827] relative">
+            <div class="py-4 px-4 md:py-6 md:px-6 flex items-center justify-center md:justify-start gap-4">
+                <!-- ✨ เปลี่ยนอิโมจิกระเป๋าเป็นโลโก้โรงเรียน ✨ -->
+                <div class="w-14 h-14 md:w-16 md:h-16 bg-white border-[4px] border-[#111827] rounded-none flex items-center justify-center shadow-[4px_4px_0px_#111827] transform -rotate-6 p-1.5">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/4/4d/Hs_logo_mid.png" alt="School Logo" class="w-full h-full object-contain">
+                </div>
+                <div class="text-left">
+                    <h2 class="text-xl md:text-2xl font-black uppercase text-white leading-none" style="text-shadow: 2px 2px 0px #111827;">HongSonEduTrack</h2>
+                    <p class="font-black tracking-[0.2em] md:tracking-[0.3em] text-[8px] md:text-[10px] text-[#FFD500] mt-1.5 uppercase">System.Online</p>
                 </div>
             </div>
-            <!-- Col 2: Info (สีพื้นหลังเหมือนกัน และปรับการจัดบรรทัด) -->
-            <div class="py-5 px-6 md:py-6 md:px-8 flex flex-col justify-center gap-3 text-center md:text-left">
-                <p class="font-bold text-xs md:text-sm text-[#111827] leading-snug md:leading-relaxed">
-                    จัดทำโดย นายธรรมธัช ธรรมราช<br>
-                    ตำแหน่งครูผู้ช่วย<br>
-                    กลุ่มสาระการเรียนรู้ภาษาต่างประเทศ<br>
-                    โรงเรียนห้องสอนศึกษา ในพระอุปถัมภ์ฯ
+            
+            <div class="py-4 px-4 md:py-6 md:px-6 flex flex-col justify-center gap-2 text-center md:text-left bg-[#FF90E8]">
+                <p class="font-black text-[10px] md:text-[11px] text-[#111827] leading-tight uppercase tracking-wide">
+                    CREATED BY: MR.THAMMATOUCH THAMMARAT<br>POSITION: ASSISTANT TEACHER<br>DEPT: FOREIGN LANGUAGES<br>HONGSONSUKSA SCHOOL
                 </p>
-                <div class="flex justify-center md:justify-start gap-3 items-center mt-1">
-                    <span class="font-black text-[10px] md:text-xs uppercase text-[#111827] bg-white border-2 border-[#111827] px-2 py-1 rounded shadow-[2px_2px_0px_#111827]">ติดต่อเรา</span>
-                    <div class="w-7 h-7 md:w-8 md:h-8 bg-[#111827] text-white rounded-full flex items-center justify-center font-bold text-xs cursor-pointer hover:-translate-y-1 transition-transform">f</div>
-                    <div class="w-7 h-7 md:w-8 md:h-8 bg-[#111827] text-white rounded-full flex items-center justify-center font-bold text-xs cursor-pointer hover:-translate-y-1 transition-transform">L</div>
-                    <div class="w-7 h-7 md:w-8 md:h-8 bg-[#111827] text-white rounded-full flex items-center justify-center font-bold text-xs cursor-pointer hover:-translate-y-1 transition-transform">@</div>
+                <div class="flex justify-center md:justify-start gap-2 items-center mt-1">
+                    <span class="font-black text-[9px] md:text-[10px] uppercase text-white bg-[#111827] border-[2px] border-[#111827] px-2 py-1 rounded-none shadow-[2px_2px_0px_#FFD500] tracking-wider">CONNECT</span>
+                    <div class="w-7 h-7 bg-white border-[2px] border-[#111827] text-[#111827] rounded-none flex items-center justify-center font-black text-[10px] cursor-pointer hover:-translate-y-1 hover:shadow-[2px_2px_0px_#111827] transition-all">f</div>
+                    <div class="w-7 h-7 bg-white border-[2px] border-[#111827] text-[#111827] rounded-none flex items-center justify-center font-black text-[10px] cursor-pointer hover:-translate-y-1 hover:shadow-[2px_2px_0px_#111827] transition-all">L</div>
+                    <div class="w-7 h-7 bg-white border-[2px] border-[#111827] text-[#111827] rounded-none flex items-center justify-center font-black text-[10px] cursor-pointer hover:-translate-y-1 hover:shadow-[2px_2px_0px_#111827] transition-all">@</div>
                 </div>
             </div>
-            <!-- Col 3: QR -->
-            <div class="py-5 px-6 md:py-6 md:px-8 flex justify-center md:justify-start items-center gap-4">
-                <div class="bg-white p-1.5 md:p-2 border-[3px] md:border-[4px] border-[#111827] rounded-xl shadow-[4px_4px_0px_#111827]">
+            
+            <div class="py-4 px-4 md:py-6 md:px-6 flex justify-center md:justify-start items-center gap-4 bg-[#00A36C]">
+                <div class="bg-white p-2 border-[4px] border-[#111827] rounded-none shadow-[4px_4px_0px_#111827] transform rotate-3 hover:rotate-0 transition-transform cursor-pointer">
                     <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=hongsonedutrack&margin=0" class="w-12 h-12 md:w-16 md:h-16 opacity-90">
                 </div>
-                <div>
-                    <div class="font-black text-[#111827] text-base md:text-lg uppercase">SCAN ME</div>
-                    <div class="font-bold text-[10px] md:text-xs text-[#111827]">เข้าสู่เว็บไซต์<br>HongSonEduTrack</div>
+                <div class="text-left">
+                    <div class="font-black text-white text-lg md:text-xl uppercase tracking-wider" style="text-shadow: 2px 2px 0px #111827;">SCAN ME</div>
+                    <div class="font-black text-[9px] md:text-[11px] text-[#FFD500] uppercase tracking-widest mt-1">ACCESS PORTAL<br>HongSonEduTrack</div>
                 </div>
             </div>
         </div>
-        <!-- Bottom Bar -->
-        <div class="bg-[#111827] text-white text-[10px] md:text-xs font-bold py-2 md:py-3 px-6 flex flex-col md:flex-row justify-between items-center gap-2">
-            <div>© 2024 HongSonEduTrack All rights reserved.</div>
-            <div class="flex flex-wrap justify-center gap-2 md:gap-3 items-center">
-                <span>📍 แม่ฮ่องสอน ประเทศไทย</span>
-                <span class="hidden md:inline">|</span>
-                <span>เวอร์ชัน 1.0.0</span>
-                <span class="hidden md:inline">|</span>
-                <span class="text-[#fef08a]">● ระบบพร้อมใช้งาน</span>
+        <div class="bg-[#111827] text-[#FF90E8] text-[9px] md:text-[10px] font-black py-2 md:py-3 px-4 md:px-6 flex flex-col md:flex-row justify-between items-center gap-2 uppercase tracking-widest border-t-[4px] border-[#111827]">
+            <div>© 2026 HongSonEduTrack All rights reserved.</div>
+            <div class="flex flex-wrap justify-center gap-3 items-center">
+                <span>📍 MAE HONG SON, TH</span><span class="hidden md:inline text-white">|</span><span class="text-white">V.2.0.NEO</span><span class="hidden md:inline text-white">|</span><span class="text-[#00A36C] drop-shadow-[1px_1px_0px_#fff]">● SYSTEM SECURE</span>
             </div>
         </div>
     </footer>
 
-    <!-- Custom Modal -->
-    <div id="custom-modal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-[#111827]/80 backdrop-blur-sm px-4">
-        <div class="bg-white rounded-xl p-8 max-w-sm w-full neo-border neo-shadow transform transition-all scale-100" id="custom-modal-content">
-            <h3 class="text-2xl font-black text-[#111827] mb-2 uppercase" id="custom-modal-title">แจ้งเตือน</h3>
-            <div class="text-gray-700 mb-6 font-bold text-sm" id="custom-modal-message">Message here</div>
-            
-            <input type="text" id="custom-modal-input" class="hidden w-full border-[3px] border-[#111827] rounded-lg px-4 py-3 mb-6 focus:outline-none focus:bg-[#fef08a] font-bold text-[#111827] text-center">
-            
-            <div class="flex flex-col sm:flex-row justify-end gap-3 mt-2" id="custom-modal-actions">
-                <button id="custom-modal-cancel" class="hidden px-5 py-3 rounded-lg bg-gray-100 text-[#111827] border-[3px] border-[#111827] hover:bg-gray-200 font-black transition-transform shadow-[3px_3px_0px_#111827] hover:translate-y-0.5 hover:shadow-[0px_0px_0px_#111827] w-full sm:w-auto order-2 sm:order-1">ยกเลิก</button>
-                <button id="custom-modal-confirm" class="px-5 py-3 rounded-lg bg-[#2C4A3E] text-white border-[3px] border-[#111827] font-black transition-transform shadow-[3px_3px_0px_#111827] hover:translate-y-0.5 hover:shadow-[0px_0px_0px_#111827] w-full sm:w-auto order-1 sm:order-2">ตกลง</button>
+    <!-- Custom Modal (Neo-Brutalism Style) -->
+    <div id="custom-modal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-[#111827]/90 backdrop-blur-sm px-4">
+        <div class="bg-[#FFD500] rounded-none p-0 max-w-sm w-full neo-border shadow-[10px_10px_0px_#FF90E8] transform transition-all scale-100 flex flex-col" id="custom-modal-content">
+            <div class="border-b-[4px] border-[#111827] bg-white h-8 flex justify-between items-center px-3">
+                <span class="text-[10px] font-black uppercase tracking-wider">Alert.exe</span>
+                <div class="flex gap-1.5"><div class="w-3 h-3 border-[2.5px] border-[#111827] bg-[#111827]"></div></div>
+            </div>
+            <div class="p-6">
+                <h3 class="text-2xl font-black text-[#111827] mb-3 uppercase tracking-tight" id="custom-modal-title">แจ้งเตือน</h3>
+                <div class="text-[#111827] mb-6 font-bold text-sm bg-white p-3 border-[3px] border-[#111827] shadow-[4px_4px_0px_#111827]" id="custom-modal-message">Message here</div>
+                <input type="text" id="custom-modal-input" class="hidden w-full border-[4px] border-[#111827] rounded-none px-4 py-3 mb-6 focus:outline-none focus:bg-white font-black text-[#111827] text-center shadow-[4px_4px_0px_#111827] focus:translate-y-1 focus:translate-x-1 focus:shadow-none transition-all">
+                <div class="flex flex-col sm:flex-row justify-end gap-3 mt-2" id="custom-modal-actions">
+                    <button id="custom-modal-cancel" class="hidden px-5 py-3 rounded-none bg-white text-[#111827] border-[4px] border-[#111827] font-black transition-transform shadow-[4px_4px_0px_#111827] hover:translate-y-1 hover:translate-x-1 hover:shadow-none w-full sm:w-auto order-2 sm:order-1 uppercase tracking-wider">ยกเลิก</button>
+                    <button id="custom-modal-confirm" class="px-5 py-3 rounded-none bg-[#00A36C] text-white border-[4px] border-[#111827] font-black transition-transform shadow-[4px_4px_0px_#111827] hover:translate-y-1 hover:translate-x-1 hover:shadow-none w-full sm:w-auto order-1 sm:order-2 uppercase tracking-wider">ตกลง</button>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Scanner Modal -->
-    <div id="scanner-modal" class="fixed inset-0 z-[110] hidden items-center justify-center bg-[#111827]/90 backdrop-blur-sm px-4 sm:py-8">
-        <div class="bg-white rounded-xl p-6 sm:p-8 max-w-lg w-full neo-border shadow-[8px_8px_0px_#FACC15] relative flex flex-col max-h-[95vh] sm:max-h-[90vh]">
-            <button onclick="closeScannerModal()" class="absolute top-4 right-4 bg-red-500 text-white border-[3px] border-[#111827] hover:bg-red-600 rounded-lg p-2 z-20 transition-transform shadow-[3px_3px_0px_#111827] active:translate-y-1 active:shadow-none">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path></svg>
-            </button>
-            
-            <h3 class="text-xl sm:text-2xl font-black text-[#111827] mb-5 flex items-center gap-2 pr-10 uppercase border-b-[4px] border-[#111827] pb-2 inline-block w-max">
-                📷 ตรวจงานด้วย QR
-            </h3>
-            
-            <div class="mb-5 flex-shrink-0">
-                <div class="space-y-3 bg-[#F3F4F6] p-4 rounded-lg border-[3px] border-[#111827]">
-                    <label class="block text-xs font-black text-[#111827] uppercase">เลือกห้องที่จะตรวจ</label>
-                    <select id="scanner-class-selector" onchange="onScannerClassChange()" class="w-full border-[3px] border-[#111827] rounded-lg px-4 py-2.5 bg-white outline-none font-bold text-sm shadow-[2px_2px_0px_#111827]"></select>
-                </div>
+    <div id="scanner-modal" class="fixed inset-0 z-[110] hidden items-center justify-center bg-[#111827]/95 backdrop-blur-md px-4 sm:py-8">
+        <div class="bg-white rounded-none p-0 max-w-lg w-full neo-border shadow-[12px_12px_0px_#2176FF] relative flex flex-col max-h-[95vh] sm:max-h-[90vh]">
+            <div class="border-b-[4px] border-[#111827] bg-[#FFD500] h-10 flex justify-between items-center px-4">
+                <span class="text-xs font-black uppercase tracking-wider text-[#111827]">QR_Scanner_Tool.exe</span>
+                <button onclick="closeScannerModal()" class="w-6 h-6 border-[3px] border-[#111827] bg-[#FF4A1C] hover:bg-red-600 transition-colors flex items-center justify-center cursor-pointer shadow-[2px_2px_0px_#111827] hover:translate-y-0.5 hover:translate-x-0.5 hover:shadow-none">
+                    <span class="text-white font-black text-xs leading-none">X</span>
+                </button>
             </div>
-
-            <div id="qr-reader" class="mb-5 flex-grow relative"></div>
-
-            <div id="scanner-result" class="p-4 sm:p-5 rounded-lg text-center font-black text-sm sm:text-base bg-[#fef08a] border-[3px] border-[#111827] text-[#111827] min-h-[70px] sm:min-h-[80px] flex items-center justify-center transition-all flex-shrink-0 shadow-[4px_4px_0px_#111827]">
-                <span class="animate-pulse">รอการสแกน QR Code...</span>
+            <div class="p-6 flex flex-col flex-grow overflow-y-auto">
+                <h3 class="text-2xl font-black text-[#111827] mb-5 uppercase tracking-tight">📷 ตรวจงานด้วย QR</h3>
+                <div class="mb-5 flex-shrink-0">
+                    <div class="space-y-4 bg-[#F3F4F6] p-4 border-[4px] border-[#111827] shadow-[4px_4px_0px_#111827]">
+                        <div>
+                            <label class="block text-[10px] font-black text-[#111827] uppercase mb-1.5 tracking-wider bg-[#FFD500] inline-block px-2 border-[2px] border-[#111827] -ml-2 -mt-6">1. เลือกห้องที่จะตรวจ</label>
+                            <select id="scanner-class-selector" onchange="onScannerClassChange()" class="w-full border-[3px] border-[#111827] rounded-none px-4 py-2.5 bg-white outline-none font-black text-sm shadow-[4px_4px_0px_#111827] cursor-pointer uppercase mt-2"></select>
+                        </div>
+                        <div class="mt-4">
+                            <label class="block text-[10px] font-black text-[#111827] uppercase mb-1.5 tracking-wider bg-[#FF90E8] inline-block px-2 border-[2px] border-[#111827] -ml-2 -mt-6">2. เลือกเป้าหมาย</label>
+                            <select id="scanner-target" class="w-full border-[3px] border-[#111827] rounded-none px-4 py-2.5 bg-white outline-none font-black text-sm shadow-[4px_4px_0px_#111827] text-[#2176FF] cursor-pointer uppercase mt-2"></select>
+                        </div>
+                    </div>
+                </div>
+                <div id="qr-reader" class="mb-5 flex-grow relative neo-border"></div>
+                <div id="scanner-result" class="p-4 sm:p-5 rounded-none text-center font-black text-sm sm:text-base bg-[#FFD500] border-[4px] border-[#111827] text-[#111827] min-h-[70px] sm:min-h-[80px] flex items-center justify-center transition-all flex-shrink-0 shadow-[6px_6px_0px_#111827] uppercase"><span class="anim-pulse">รอการสแกน QR Code...</span></div>
             </div>
         </div>
     </div>
@@ -498,10 +568,12 @@
     <!-- Image Viewer Modal -->
     <div id="image-viewer-modal" class="fixed inset-0 z-[120] hidden items-center justify-center bg-[#111827]/95 backdrop-blur-md px-4 py-10 transition-opacity" onclick="closeImageViewer()">
         <div class="relative max-w-4xl w-full flex justify-center items-center h-full">
-            <button onclick="closeImageViewer()" class="absolute top-4 right-4 sm:-top-10 sm:-right-10 text-white bg-red-500 border-[3px] border-[#111827] shadow-[4px_4px_0px_#111827] hover:translate-y-1 hover:shadow-none rounded-xl p-3 z-50 transition-all">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path></svg>
+            <button onclick="closeImageViewer()" class="absolute top-4 right-4 sm:-top-10 sm:-right-10 text-white bg-[#FF4A1C] border-[4px] border-[#111827] shadow-[4px_4px_0px_#111827] hover:translate-y-1 hover:translate-x-1 hover:shadow-none rounded-none p-3 z-50 transition-all">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
-            <img id="image-viewer-img" src="" class="max-w-full max-h-[85vh] rounded-none shadow-[10px_10px_0px_#FACC15] object-contain border-[6px] border-[#111827] bg-white select-none" onclick="event.stopPropagation()">
+            <div class="bg-white p-2 border-[6px] border-[#111827] shadow-[12px_12px_0px_#FFD500]">
+                <img id="image-viewer-img" src="" class="max-w-full max-h-[80vh] object-contain select-none neo-border" onclick="event.stopPropagation()">
+            </div>
         </div>
     </div>
 
@@ -548,19 +620,19 @@
         let activeAdminClassId = appData.classes.length > 0 ? appData.classes[0].id : null;
         let loggedInStudentId = null;
 
-        const pastelColors = ['bg-[#fef08a]', 'bg-[#fed7aa]', 'bg-[#bbf7d0]', 'bg-[#bfdbfe]', 'bg-[#fbcfe8]', 'bg-[#e9d5ff]'];
+        const pastelColors = ['pastel-1', 'pastel-2', 'pastel-3', 'pastel-4', 'pastel-5', 'pastel-6'];
 
         async function saveData() { 
             localStorage.setItem('eduTrackData_v3', JSON.stringify(appData)); 
             if(GAS_URL && GAS_URL !== "") {
                 const cloudIndicator = document.getElementById('cloud-status');
-                cloudIndicator.innerHTML = `<span class="syncing font-bold">☁️</span> <span class="hidden md:inline text-[#2C4A3E] font-black">กำลังบันทึก...</span>`;
+                cloudIndicator.innerHTML = `<span class="syncing font-black text-xl">☁️</span> <span class="hidden md:inline text-[#2C4A3E] font-black uppercase">SYNCING...</span>`;
                 try {
                     await fetch(GAS_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, redirect: 'follow', body: JSON.stringify(appData) });
-                    cloudIndicator.innerHTML = `<span class="text-[#2C4A3E] font-bold">☁️</span> <span class="hidden md:inline text-[#2C4A3E] font-black">ซิงค์แล้ว</span>`;
-                    setTimeout(() => { cloudIndicator.innerHTML = `☁️ <span class="hidden md:inline">ออนไลน์</span>`; }, 2000);
+                    cloudIndicator.innerHTML = `<span class="text-[#00A36C] font-black text-xl drop-shadow-[1px_1px_0px_#111827]">☁️</span> <span class="hidden md:inline text-[#00A36C] font-black uppercase">ONLINE</span>`;
+                    setTimeout(() => { cloudIndicator.innerHTML = `<span class="text-[#2176FF] font-black text-xl drop-shadow-[1px_1px_0px_#111827]">☁️</span> <span class="hidden md:inline text-[#111827] font-black uppercase">ONLINE</span>`; }, 2000);
                 } catch (error) {
-                    cloudIndicator.innerHTML = `<span class="text-red-500 font-bold">☁️</span> <span class="hidden md:inline text-red-500 font-black">รอซิงค์</span>`;
+                    cloudIndicator.innerHTML = `<span class="text-[#FF4A1C] font-black text-xl drop-shadow-[1px_1px_0px_#111827]">☁️</span> <span class="hidden md:inline text-[#FF4A1C] font-black uppercase">ERR:SYNC</span>`;
                 }
             }
         }
@@ -568,66 +640,38 @@
         async function loadDataFromCloud() {
             if(!GAS_URL || GAS_URL === "") return;
             const cloudIndicator = document.getElementById('cloud-status');
-            cloudIndicator.innerHTML = `<span class="syncing font-bold">☁️</span> <span class="hidden md:inline text-gray-600 font-black">กำลังโหลด...</span>`;
+            cloudIndicator.innerHTML = `<span class="syncing font-black text-xl">☁️</span> <span class="hidden md:inline text-gray-600 font-black uppercase">LOADING...</span>`;
             try {
                 const response = await fetch(GAS_URL, { method: 'GET', redirect: 'follow' });
                 const rawText = await response.text();
-                if(rawText.trim().startsWith('<')) throw new Error("ระบบถูกบล็อก");
+                if(rawText.trim().startsWith('<')) throw new Error("Blocked by CORS/Auth");
                 let cloudData = JSON.parse(rawText);
                 if(cloudData && cloudData.classes) {
                     appData = cloudData; localStorage.setItem('eduTrackData_v3', JSON.stringify(appData));
-                    cloudIndicator.innerHTML = `☁️ <span class="hidden md:inline">ออนไลน์</span>`;
+                    cloudIndicator.innerHTML = `<span class="text-[#2176FF] font-black text-xl drop-shadow-[1px_1px_0px_#111827]">☁️</span> <span class="hidden md:inline text-[#111827] font-black uppercase">ONLINE</span>`;
                     if(!document.getElementById('teacher-view').classList.contains('hidden')) renderTeacherView();
                     if(!document.getElementById('dashboard-view').classList.contains('hidden')) { populateDashDropdown(); renderDashboard(); }
                     if(loggedInStudentId) performStudentLogin(loggedInStudentId);
                 } else throw new Error("Invalid structure");
             } catch (error) {
-                cloudIndicator.innerHTML = `<span class="text-red-500 font-bold cursor-pointer" title="${error.message}">☁️</span> <span class="hidden md:inline text-red-500 font-black">ออฟไลน์</span>`;
+                cloudIndicator.innerHTML = `<span class="text-[#FF4A1C] font-black text-xl cursor-pointer drop-shadow-[1px_1px_0px_#111827]" title="${error.message}">☁️</span> <span class="hidden md:inline text-[#FF4A1C] font-black uppercase">OFFLINE</span>`;
             }
-        }
-
-        async function uploadImageToDrive(base64Data, filename) {
-            if(!GAS_URL || GAS_URL === "") return null;
-            try {
-                const payload = { action: "uploadImage", filename: filename + ".jpg", mimeType: "image/jpeg", base64: base64Data };
-                const res = await fetch(GAS_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, redirect: 'follow', body: JSON.stringify(payload) });
-                const result = await res.json();
-                if(result.success && result.url) return result.url;
-                return null;
-            } catch(error) { return null; }
         }
 
         function generateId() { return Math.random().toString(36).substr(2, 9); }
         function getActiveAdminClass() { return appData.classes.find(c => c.id === activeAdminClassId); }
 
         function generateSvgAvatar(name) {
-            const colors = ['#2C4A3E', '#D97443', '#8F9E8B', '#3b82f6', '#8b5cf6', '#f59e0b', '#10b981'];
+            const colors = ['#FF4A1C', '#FFD500', '#00A36C', '#2176FF', '#9D4EDD', '#FF90E8'];
             const char = (name && name.length > 0) ? name.charAt(0) : '?';
             const bg = colors[char.charCodeAt(0) % colors.length] || colors[0];
-            const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="${bg}"/><text x="50" y="50" font-family="sans-serif" font-size="45" font-weight="bold" fill="#fff" dominant-baseline="central" text-anchor="middle">${char}</text></svg>`;
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="${bg}"/><text x="50" y="50" font-family="sans-serif" font-size="50" font-weight="900" fill="#111827" dominant-baseline="central" text-anchor="middle">${char}</text><rect width="100" height="100" fill="none" stroke="#111827" stroke-width="8"/></svg>`;
             return `data:image/svg+xml;base64,${btoa(unescape(encodeURIComponent(svg)))}`;
         }
 
         function getAvatar(name, customUrl) {
             if (customUrl && customUrl.trim() !== '') return customUrl;
             return generateSvgAvatar(name);
-        }
-
-        function getBase64Image(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader(); reader.readAsDataURL(file);
-                reader.onload = (e) => {
-                    const img = new Image(); img.src = e.target.result;
-                    img.onload = () => {
-                        const canvas = document.createElement('canvas'); const MAX_WIDTH = 300; const MAX_HEIGHT = 300;
-                        let width = img.width; let height = img.height;
-                        if (width > height) { if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; } } 
-                        else { if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; } }
-                        canvas.width = width; canvas.height = height; const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, width, height);
-                        resolve(canvas.toDataURL('image/jpeg', 0.8));
-                    }; img.onerror = error => reject(error);
-                }; reader.onerror = error => reject(error);
-            });
         }
 
         function toggleAdminTools() {
@@ -639,17 +683,23 @@
         let html5QrcodeScanner = null;
         let isProcessingScan = false;
 
+        function updateScannerTargets(classId) {
+            const cls = appData.classes.find(c => c.id === classId);
+            if(!cls) return;
+            let options = `<option value="bonus">🌟 GIVE BONUS STAR (+1)</option>`;
+            cls.assignments.forEach(task => { options += `<option value="task_full_${task.id}">💯 MAX SCORE: ${task.name}</option>`; });
+            document.getElementById('scanner-target').innerHTML = options;
+        }
+
         function openScannerModal() {
             if(appData.classes.length === 0) return showModal({title:"แจ้งเตือน", msg:"กรุณาเพิ่มห้องเรียนและนักเรียนก่อนเปิดโหมดสแกน"});
             let classOpts = "";
-            appData.classes.forEach(c => {
-                const sel = c.id === activeAdminClassId ? 'selected' : '';
-                classOpts += `<option value="${c.id}" ${sel}>${c.name}</option>`;
-            });
+            appData.classes.forEach(c => { const sel = c.id === activeAdminClassId ? 'selected' : ''; classOpts += `<option value="${c.id}" ${sel}>${c.name}</option>`; });
             document.getElementById('scanner-class-selector').innerHTML = classOpts;
+            updateScannerTargets(activeAdminClassId);
             document.getElementById('scanner-modal').classList.remove('hidden'); document.getElementById('scanner-modal').classList.add('flex');
-            document.getElementById('scanner-result').className = "p-5 rounded-xl text-center font-black text-sm sm:text-base bg-white border-[3px] border-[#111827] text-[#111827] min-h-[70px] sm:min-h-[80px] flex items-center justify-center transition-all flex-shrink-0 shadow-[4px_4px_0px_#111827]";
-            document.getElementById('scanner-result').innerHTML = "<span class='animate-pulse'>รอการสแกน QR Code... (ระบบจะให้คะแนนเต็มทุกงานที่ค้าง)</span>";
+            document.getElementById('scanner-result').className = "p-5 rounded-none text-center font-black text-sm sm:text-base bg-[#FFD500] border-[4px] border-[#111827] text-[#111827] min-h-[70px] sm:min-h-[80px] flex items-center justify-center transition-all flex-shrink-0 shadow-[6px_6px_0px_#111827] uppercase";
+            document.getElementById('scanner-result').innerHTML = "<span class='anim-pulse'>WAITING FOR SCAN...</span>";
 
             const qrboxFunction = function(viewfinderWidth, viewfinderHeight) {
                 let minEdgeSize = Math.min(viewfinderWidth, viewfinderHeight); let qrboxSize = Math.floor(minEdgeSize * 0.75); 
@@ -662,6 +712,7 @@
         function onScannerClassChange() {
             const selectedClassId = document.getElementById('scanner-class-selector').value;
             activeAdminClassId = selectedClassId; document.getElementById('teacher-class-selector').value = selectedClassId; renderTeacherView();
+            updateScannerTargets(selectedClassId);
         }
 
         function closeScannerModal() {
@@ -680,28 +731,23 @@
             const resBox = document.getElementById('scanner-result');
 
             if (!std) {
-                resBox.className = "p-5 rounded-xl text-center font-black text-sm sm:text-base bg-[#fca5a5] border-[3px] border-[#111827] text-[#111827] min-h-[70px] sm:min-h-[80px] flex items-center justify-center transition-all flex-shrink-0 shadow-[4px_4px_0px_#111827]";
-                resBox.innerHTML = `❌ ไม่พบรหัสนักเรียน <span class="underline decoration-wavy ml-1">${scannedId}</span> ในห้อง ${cls.name}`;
+                resBox.className = "p-5 rounded-none text-center font-black text-sm sm:text-base bg-[#FF4A1C] border-[4px] border-[#111827] text-white min-h-[70px] sm:min-h-[80px] flex items-center justify-center transition-all flex-shrink-0 shadow-[6px_6px_0px_#111827] uppercase";
+                resBox.innerHTML = `❌ NOT FOUND: <span class="underline decoration-wavy ml-1">${scannedId}</span> IN ${cls.name}`;
             } else {
-                let givenTasks = 0;
-                cls.assignments.forEach(task => {
-                    const currentScore = std.scores[task.id];
-                    // ถ้ายังไม่มีคะแนน หรือเป็นคำว่า submitted ให้ใส่คะแนนเต็มเลย
-                    if(!currentScore || currentScore === "submitted") {
-                        std.scores[task.id] = task.maxScore;
-                        givenTasks++;
-                    }
-                });
+                const target = document.getElementById('scanner-target').value;
+                let successMsg = "";
+                if (target === "bonus") { if(std.bonus === undefined) std.bonus = 0; std.bonus += 1; successMsg = `🌟 +1 STAR TO <b>${std.name}</b> (TOTAL ${std.bonus})`; } 
+                else if (target.startsWith("task_full_")) { const taskId = target.replace("task_full_", ""); const taskInfo = cls.assignments.find(a => a.id === taskId); std.scores[taskId] = taskInfo.maxScore; successMsg = `💯 MAX SCORE FOR ${taskInfo.name} TO <b>${std.name}</b>`; }
 
                 saveData();
-                resBox.className = "p-5 rounded-xl text-center font-black text-sm sm:text-base bg-[#bbf7d0] border-[3px] border-[#111827] text-[#111827] min-h-[70px] sm:min-h-[80px] flex flex-col items-center justify-center transition-all flex-shrink-0 shadow-[4px_4px_0px_#111827] scale-[1.02]";
-                resBox.innerHTML = `✅ ตรวจผ่าน!<br><span class="text-xs sm:text-sm font-bold mt-1 text-[#2C4A3E]">ให้คะแนนเต็ม ${givenTasks} ชิ้นงาน ของ <b>${std.name}</b> แล้ว</span>`;
+                resBox.className = "p-5 rounded-none text-center font-black text-sm sm:text-base bg-[#00A36C] border-[4px] border-[#111827] text-white min-h-[70px] sm:min-h-[80px] flex flex-col items-center justify-center transition-all flex-shrink-0 shadow-[6px_6px_0px_#111827] scale-[1.02] uppercase";
+                resBox.innerHTML = `✅ SUCCESS!<br><span class="text-xs sm:text-sm font-black mt-1 text-[#FFD500]">${successMsg}</span>`;
             }
 
             setTimeout(() => {
                 isProcessingScan = false;
-                resBox.className = "p-5 rounded-xl text-center font-black text-sm sm:text-base bg-white border-[3px] border-[#111827] text-[#111827] min-h-[70px] sm:min-h-[80px] flex items-center justify-center transition-all flex-shrink-0 shadow-[4px_4px_0px_#111827]";
-                resBox.innerHTML = "<span class='animate-pulse'>พร้อมสแกนคนต่อไป...</span>";
+                resBox.className = "p-5 rounded-none text-center font-black text-sm sm:text-base bg-[#FFD500] border-[4px] border-[#111827] text-[#111827] min-h-[70px] sm:min-h-[80px] flex items-center justify-center transition-all flex-shrink-0 shadow-[6px_6px_0px_#111827] uppercase";
+                resBox.innerHTML = "<span class='anim-pulse'>READY FOR NEXT SCAN...</span>";
             }, 1500);
         }
 
@@ -711,10 +757,7 @@
 
         function calculateStudentScore(student, assignments) {
             let assignRawSum = 0;
-            assignments.forEach(a => {
-                let s = student.scores[a.id];
-                if (s !== null && s !== undefined && s !== "" && s !== "submitted") assignRawSum += Number(s);
-            });
+            assignments.forEach(a => { let s = student.scores[a.id]; if (s !== null && s !== undefined && s !== "" && s !== "submitted") assignRawSum += Number(s); });
             let att = Number(student.attendance || 0); let mid = Number(student.midterm || 0); let fin = Number(student.final || 0); let bonus = Number(student.bonus || 0);
             if(att > MAX_WEIGHT.att) att = MAX_WEIGHT.att; if(mid > MAX_WEIGHT.mid) mid = MAX_WEIGHT.mid; if(fin > MAX_WEIGHT.fin) fin = MAX_WEIGHT.fin;
             let total100 = assignRawSum + att + mid + fin + bonus;
@@ -729,9 +772,9 @@
             const selector = document.getElementById('teacher-class-selector');
 
             if(appData.classes.length === 0) {
-                selector.innerHTML = '<option value="">-- ยังไม่มีห้องเรียน --</option>';
+                selector.innerHTML = '<option value="">-- NO CLASSES YET --</option>';
                 document.getElementById('admin-table-head').innerHTML = '';
-                document.getElementById('admin-table-body').innerHTML = `<tr><td colspan="15" class="text-center py-16 text-gray-500 font-bold bg-white border-t-[3px] border-[#111827]"><div class="text-4xl mb-2">🏫</div>กรุณาเพิ่มห้องเรียนเพื่อเริ่มต้นใช้งาน</td></tr>`;
+                document.getElementById('admin-table-body').innerHTML = `<tr><td colspan="15" class="text-center py-16 text-[#111827] font-black bg-white border-t-[4px] border-[#111827] uppercase"><div class="text-5xl mb-3 drop-shadow-[4px_4px_0px_#111827]">🏫</div>PLEASE ADD A CLASS TO START</td></tr>`;
                 document.getElementById('th-assign-group').colSpan = 1; return;
             }
 
@@ -750,34 +793,34 @@
             const assignCount = cls.assignments.length > 0 ? cls.assignments.length : 1;
             document.getElementById('th-assign-group').colSpan = assignCount + 1;
 
-            let thHTML = `<th class="px-2 sm:px-3 py-4 w-10 text-center border-r-[3px] border-b-[3px] border-[#111827] bg-[#F3F4F6]">ที่</th><th class="px-2 sm:px-3 py-4 w-12 sm:w-14 text-center border-r-[3px] border-b-[3px] border-[#111827] bg-[#F3F4F6]">รูป</th><th class="px-2 sm:px-3 py-4 w-16 sm:w-20 text-center border-r-[3px] border-b-[3px] border-[#111827] bg-[#F3F4F6]">รหัส</th><th class="px-3 sm:px-4 py-4 min-w-[150px] border-r-[3px] border-b-[3px] border-[#111827] bg-[#F3F4F6] text-left">ชื่อ-สกุล</th>`;
+            let thHTML = `<th class="px-2 sm:px-3 py-4 w-10 text-center border-r-[4px] border-b-[4px] border-[#111827] bg-[#F3F4F6] text-[#111827]">NO.</th><th class="px-2 sm:px-3 py-4 w-12 sm:w-14 text-center border-r-[4px] border-b-[4px] border-[#111827] bg-[#F3F4F6] text-[#111827]">PIC</th><th class="px-2 sm:px-3 py-4 w-16 sm:w-20 text-center border-r-[4px] border-b-[4px] border-[#111827] bg-[#F3F4F6] text-[#111827]">ID</th><th class="px-3 sm:px-4 py-4 min-w-[150px] border-r-[4px] border-b-[4px] border-[#111827] bg-[#F3F4F6] text-left text-[#111827]">NAME</th>`;
             
             if(cls.assignments.length === 0) {
-                thHTML += `<th class="px-3 py-4 text-gray-500 text-center font-bold text-xs border-r-[3px] border-b-[3px] border-[#111827] bg-[#fef08a]">ยังไม่มีชิ้นงาน</th>`;
+                thHTML += `<th class="px-3 py-4 text-gray-500 text-center font-black text-xs border-r-[4px] border-b-[4px] border-[#111827] bg-[#FFD500]">NO TASKS</th>`;
             } else {
                 cls.assignments.forEach((task, index) => {
-                    const bgColor = pastelColors[index % pastelColors.length];
+                    const bgColorClass = pastelColors[index % pastelColors.length];
                     thHTML += `
-                        <th class="px-1.5 sm:px-2 py-3 min-w-[90px] sm:min-w-[110px] max-w-[130px] ${bgColor} border-r-[3px] border-b-[3px] border-[#111827] text-center group relative shadow-[inset_0_2px_0_rgba(255,255,255,0.5)]">
-                            <div class="text-[10px] sm:text-xs font-black text-[#111827] truncate px-1" title="${task.name}">${task.name}</div>
-                            <div class="text-[9px] sm:text-[10px] text-[#111827] font-bold mt-0.5">(เต็ม ${task.maxScore})</div>
-                            <div class="absolute top-1 right-1 flex flex-col gap-0.5 opacity-0 group-hover:opacity-100 transition-all bg-white p-1 rounded border-2 border-[#111827] shadow-[2px_2px_0px_#111827]">
-                                <button onclick="editTask('${task.id}')" class="text-blue-600 hover:text-white hover:bg-blue-600 rounded px-1.5 py-0.5 text-[9px] font-black w-full text-left">แก้</button>
-                                <button onclick="deleteTask('${task.id}')" class="text-red-500 hover:text-white hover:bg-red-500 rounded px-1.5 py-0.5 text-[9px] font-black w-full text-left">ลบ</button>
+                        <th class="px-1.5 sm:px-2 py-3 min-w-[90px] sm:min-w-[110px] max-w-[130px] ${bgColorClass} border-r-[4px] border-b-[4px] border-[#111827] text-center group relative shadow-[inset_0_4px_0_rgba(255,255,255,0.3)]">
+                            <div class="text-[10px] sm:text-xs font-black truncate px-1 uppercase" title="${task.name}">${task.name}</div>
+                            <div class="text-[9px] sm:text-[10px] font-black mt-0.5">(MAX ${task.maxScore})</div>
+                            <div class="absolute top-1 right-1 flex flex-col gap-0.5 opacity-0 group-hover:opacity-100 transition-all bg-[#111827] p-1 rounded-none border-[2px] border-[#111827] shadow-[2px_2px_0px_white]">
+                                <button onclick="editTask('${task.id}')" class="text-white hover:text-[#FFD500] rounded-none px-1.5 py-0.5 text-[9px] font-black w-full text-left uppercase">EDIT</button>
+                                <button onclick="deleteTask('${task.id}')" class="text-[#FF4A1C] hover:text-white rounded-none px-1.5 py-0.5 text-[9px] font-black w-full text-left uppercase">DEL</button>
                             </div>
                         </th>`;
                 });
             }
             
             thHTML += `
-                <th class="px-2 sm:px-3 py-3 w-16 sm:w-20 text-center border-r-[3px] border-b-[3px] border-[#111827] bg-[#fef08a] shadow-[inset_1px_0_0_rgba(255,255,255,0.5)]"><div class="text-[10px] sm:text-xs font-black text-[#111827]">รวมดิบ</div></th>
-                <th class="px-2 sm:px-3 py-3 w-20 text-center border-r-[3px] border-b-[3px] border-[#111827] bg-[#bfdbfe]"><div class="text-[10px] sm:text-xs font-black text-[#111827]">จิตพิสัย</div><div class="text-[9px] sm:text-[10px] text-[#111827] font-bold">(10)</div></th>
-                <th class="px-2 sm:px-3 py-3 w-20 text-center border-r-[3px] border-b-[3px] border-[#111827] bg-[#bfdbfe]"><div class="text-[10px] sm:text-xs font-black text-[#111827]">กลางภาค</div><div class="text-[9px] sm:text-[10px] text-[#111827] font-bold">(20)</div></th>
-                <th class="px-2 sm:px-3 py-3 w-20 text-center border-r-[3px] border-b-[3px] border-[#111827] bg-[#bfdbfe]"><div class="text-[10px] sm:text-xs font-black text-[#111827]">ปลายภาค</div><div class="text-[9px] sm:text-[10px] text-[#111827] font-bold">(20)</div></th>
-                <th class="px-2 sm:px-3 py-3 w-16 sm:w-20 text-center border-r-[3px] border-b-[3px] border-[#111827] bg-[#fed7aa]"><div class="text-[10px] sm:text-xs font-black text-[#111827]">ดาว 🌟</div><div class="text-[9px] sm:text-[10px] text-[#111827] font-bold">โบนัส</div></th>
-                <th class="px-2 sm:px-4 py-3 w-16 sm:w-24 text-center border-r-[3px] border-b-[3px] border-[#111827] font-black text-[#111827] text-sm bg-[#bbf7d0] shadow-[inset_1px_0_0_rgba(255,255,255,0.5)]">รวม</th>
-                <th class="px-2 sm:px-4 py-3 w-16 sm:w-20 text-center border-r-[3px] border-b-[3px] border-[#111827] font-black text-[#111827] text-sm bg-[#bbf7d0]">เกรด</th>
-                <th class="px-2 py-3 w-12 sm:w-16 text-center border-b-[3px] border-[#111827] bg-[#F3F4F6]"></th>
+                <th class="px-2 sm:px-3 py-3 w-16 sm:w-20 text-center border-r-[4px] border-b-[4px] border-[#111827] bg-[#FFD500] shadow-[inset_4px_0_0_rgba(255,255,255,0.4)]"><div class="text-[10px] sm:text-xs font-black text-[#111827]">RAW</div></th>
+                <th class="px-2 sm:px-3 py-3 w-20 text-center border-r-[4px] border-b-[4px] border-[#111827] bg-[#2176FF] text-white"><div class="text-[10px] sm:text-xs font-black">ATT.</div><div class="text-[9px] sm:text-[10px] font-bold">(10)</div></th>
+                <th class="px-2 sm:px-3 py-3 w-20 text-center border-r-[4px] border-b-[4px] border-[#111827] bg-[#2176FF] text-white"><div class="text-[10px] sm:text-xs font-black">MID</div><div class="text-[9px] sm:text-[10px] font-bold">(20)</div></th>
+                <th class="px-2 sm:px-3 py-3 w-20 text-center border-r-[4px] border-b-[4px] border-[#111827] bg-[#2176FF] text-white"><div class="text-[10px] sm:text-xs font-black">FIN</div><div class="text-[9px] sm:text-[10px] font-bold">(20)</div></th>
+                <th class="px-2 sm:px-3 py-3 w-16 sm:w-20 text-center border-r-[4px] border-b-[4px] border-[#111827] bg-[#FF90E8]"><div class="text-[10px] sm:text-xs font-black text-[#111827]">STAR</div><div class="text-[9px] sm:text-[10px] text-[#111827] font-bold">BONUS</div></th>
+                <th class="px-2 sm:px-4 py-3 w-16 sm:w-24 text-center border-r-[4px] border-b-[4px] border-[#111827] font-black text-white text-sm bg-[#00A36C] shadow-[inset_4px_0_0_rgba(255,255,255,0.3)] tracking-wider">TOTAL</th>
+                <th class="px-2 sm:px-4 py-3 w-16 sm:w-20 text-center border-r-[4px] border-b-[4px] border-[#111827] font-black text-white text-sm bg-[#00A36C] tracking-wider">GRADE</th>
+                <th class="px-2 py-3 w-12 sm:w-16 text-center border-b-[4px] border-[#111827] bg-[#F3F4F6]"></th>
             `;
             document.getElementById('admin-table-head').innerHTML = thHTML;
 
@@ -788,19 +831,19 @@
                 const fallbackSvg = generateSvgAvatar(std.name).replace(/"/g, '&quot;');
                 
                 tbHTML += `
-                <tr class="hover:bg-gray-100 transition-colors group bg-white">
-                    <td class="px-1.5 sm:px-2 py-2 text-center text-xs font-black text-[#111827] border-r-[3px] border-[#111827]">${std.no}</td>
-                    <td class="px-1.5 sm:px-2 py-2 text-center border-r-[3px] border-[#111827]">
+                <tr class="hover:bg-[#FDF8EE] transition-colors group bg-white">
+                    <td class="px-1.5 sm:px-2 py-2 text-center text-xs font-black text-[#111827] border-r-[4px] border-b-[4px] border-[#111827]">${std.no}</td>
+                    <td class="px-1.5 sm:px-2 py-2 text-center border-r-[4px] border-b-[4px] border-[#111827]">
                         <div class="flex items-center justify-center">
-                            <img src="${avatar}" data-fallback="${fallbackSvg}" onerror="this.onerror=null; this.src=this.getAttribute('data-fallback');" onclick="viewImage(this.src)" class="w-8 h-8 sm:w-10 sm:h-10 min-w-[32px] rounded-lg object-cover border-[3px] border-[#111827] shadow-[2px_2px_0px_#111827] flex-shrink-0 cursor-pointer hover:translate-y-1 hover:shadow-none transition-all bg-gray-50">
+                            <img src="${avatar}" data-fallback="${fallbackSvg}" onerror="this.onerror=null; this.src=this.getAttribute('data-fallback');" onclick="viewImage(this.src)" class="w-8 h-8 sm:w-10 sm:h-10 min-w-[32px] rounded-none object-cover border-[3px] border-[#111827] shadow-[2px_2px_0px_#111827] flex-shrink-0 cursor-pointer hover:-translate-y-1 hover:shadow-[4px_4px_0px_#111827] transition-all bg-white">
                         </div>
                     </td>
-                    <td class="px-1.5 sm:px-2 py-2 text-center text-[10px] sm:text-xs font-black text-gray-500 border-r-[3px] border-[#111827]">${std.studentId}</td>
-                    <td class="px-2 sm:px-3 py-2 text-xs sm:text-sm font-black text-[#111827] border-r-[3px] border-[#111827] truncate max-w-[120px] sm:max-w-[180px]" title="${std.name}">${std.name}</td>
+                    <td class="px-1.5 sm:px-2 py-2 text-center text-[10px] sm:text-xs font-black text-gray-500 border-r-[4px] border-b-[4px] border-[#111827]">${std.studentId}</td>
+                    <td class="px-2 sm:px-3 py-2 text-xs sm:text-sm font-black text-[#111827] border-r-[4px] border-b-[4px] border-[#111827] truncate max-w-[120px] sm:max-w-[180px] uppercase tracking-wide" title="${std.name}">${std.name}</td>
                 `;
 
                 if(cls.assignments.length === 0) {
-                    tbHTML += `<td class="border-r-[3px] border-[#111827] bg-white"></td>`;
+                    tbHTML += `<td class="border-r-[4px] border-b-[4px] border-[#111827] bg-white"></td>`;
                 } else {
                     cls.assignments.forEach((task, index) => {
                         const rawVal = std.scores[task.id];
@@ -808,49 +851,49 @@
                         const hasScore = rawVal !== undefined && rawVal !== null && rawVal !== "" && !isPending;
                         
                         const displayVal = hasScore ? rawVal : '';
-                        const inputStyles = hasScore ? 'border-[#111827] bg-[#fef08a] text-[#111827] shadow-[2px_2px_0px_#111827]' : 'border-gray-300 bg-white text-gray-700 focus:border-[#111827] focus:shadow-[2px_2px_0px_#111827]';
-                        const btnStyles = (isPending || hasScore) ? 'bg-[#2C4A3E] border-[#111827] text-white shadow-[2px_2px_0px_#111827]' : 'bg-white border-gray-300 text-gray-300 hover:text-[#111827] hover:border-[#111827] hover:shadow-[2px_2px_0px_#111827]';
-                        const placeholderStr = isPending ? 'รอตรวจ' : '';
+                        const inputStyles = hasScore ? 'border-[#111827] bg-[#FFD500] text-[#111827] shadow-[2px_2px_0px_#111827]' : 'border-[#111827] bg-white text-[#111827] focus:border-[#2176FF] focus:shadow-[2px_2px_0px_#2176FF] border-dashed';
+                        const btnStyles = (isPending || hasScore) ? 'bg-[#00A36C] border-[#111827] text-white shadow-[2px_2px_0px_#111827]' : 'bg-white border-[#111827] border-dashed text-[#111827] hover:bg-[#FFD500] hover:border-solid hover:shadow-[2px_2px_0px_#111827]';
+                        const placeholderStr = isPending ? 'WAIT' : '';
 
                         tbHTML += `
-                            <td class="px-1.5 sm:px-2 py-1.5 border-r-[3px] border-[#111827] relative bg-white group/cell">
+                            <td class="px-1.5 sm:px-2 py-1.5 border-r-[4px] border-b-[4px] border-[#111827] relative bg-white group/cell">
                                 <div class="flex items-center justify-center space-x-1.5">
                                     <input type="number" id="score-${std.id}-${task.id}" min="0" max="${task.maxScore}" value="${displayVal}" placeholder="${placeholderStr}"
-                                        class="w-11 sm:w-14 text-center border-2 ${inputStyles} rounded-lg text-xs sm:text-sm py-1.5 font-black focus:outline-none transition-all"
+                                        class="w-11 sm:w-14 text-center border-[3px] ${inputStyles} rounded-none text-xs sm:text-sm py-1.5 font-black focus:outline-none transition-all"
                                         onchange="updateScore('${std.id}', '${task.id}', this.value)">
                                     <button onclick="toggleSubmitStatus('${std.id}', '${task.id}')" 
-                                        class="flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center transition-all border-2 ${btnStyles} active:translate-y-0.5 active:shadow-none" title="คลิกให้คะแนนเต็ม / ลบออก">
-                                        <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                                        class="flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-none flex items-center justify-center transition-all border-[3px] ${btnStyles} active:translate-y-1 active:translate-x-1 active:shadow-none" title="คลิกให้คะแนนเต็ม / ลบออก">
+                                        <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="4"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
                                     </button>
                                 </div>
                             </td>`;
                     });
                 }
 
-                tbHTML += `<td class="px-2 py-2 text-center font-black text-[#111827] border-r-[3px] border-[#111827] bg-[#fef08a] shadow-[inset_2px_0_0_rgba(255,255,255,0.7)] text-sm sm:text-base">${stat.assignRawSum}</td>`;
+                tbHTML += `<td class="px-2 py-2 text-center font-black text-[#111827] border-r-[4px] border-b-[4px] border-[#111827] bg-[#FFD500] shadow-[inset_4px_0_0_rgba(255,255,255,0.5)] text-sm sm:text-base">${stat.assignRawSum}</td>`;
 
                 const fixedInputs = [ { key: 'attendance', max: MAX_WEIGHT.att, val: std.attendance }, { key: 'midterm', max: MAX_WEIGHT.mid, val: std.midterm }, { key: 'final', max: MAX_WEIGHT.fin, val: std.final } ];
                 fixedInputs.forEach((f, idx) => {
                     const v = f.val !== undefined && f.val !== null ? f.val : '';
-                    const inStyle = v !== '' ? 'border-[#111827] text-[#111827] bg-[#bfdbfe] shadow-[2px_2px_0px_#111827]' : 'border-gray-300 bg-white hover:border-[#111827] text-gray-700';
-                    tbHTML += `<td class="px-1.5 sm:px-2 py-1.5 border-r-[3px] border-[#111827] bg-white text-center"><input type="number" id="fixed-${std.id}-${f.key}" min="0" max="${f.max}" value="${v}" class="w-11 sm:w-14 text-center border-2 ${inStyle} rounded-lg py-1.5 font-black text-xs sm:text-sm focus:outline-none transition-all" onchange="updateFixedScore('${std.id}', '${f.key}', this.value, ${f.max})"></td>`;
+                    const inStyle = v !== '' ? 'border-[#111827] text-white bg-[#2176FF] shadow-[2px_2px_0px_#111827]' : 'border-[#111827] border-dashed bg-white hover:border-solid hover:shadow-[2px_2px_0px_#111827] text-[#111827]';
+                    tbHTML += `<td class="px-1.5 sm:px-2 py-1.5 border-r-[4px] border-b-[4px] border-[#111827] bg-white text-center"><input type="number" id="fixed-${std.id}-${f.key}" min="0" max="${f.max}" value="${v}" class="w-11 sm:w-14 text-center border-[3px] ${inStyle} rounded-none py-1.5 font-black text-xs sm:text-sm focus:outline-none transition-all" onchange="updateFixedScore('${std.id}', '${f.key}', this.value, ${f.max})"></td>`;
                 });
 
-                tbHTML += `<td class="px-1.5 sm:px-2 py-1.5 border-r-[3px] border-[#111827] bg-white text-center"><div class="flex items-center justify-center space-x-1.5 bg-[#fed7aa]/30 p-1 rounded-lg border-2 border-transparent hover:border-[#111827] transition-all">${stat.bonus > 0 ? `<button onclick="updateBonusScore('${std.id}', -1)" class="text-white text-[12px] bg-red-500 border-2 border-[#111827] rounded-md w-6 h-6 flex items-center justify-center flex-shrink-0 transition-transform shadow-[2px_2px_0px_#111827] font-black active:translate-y-0.5 active:shadow-none" title="ลดดาว">-</button>` : `<div class="w-6 flex-shrink-0"></div>`}<span class="text-sm font-black ${stat.bonus > 0 ? 'text-[#111827]' : 'text-gray-400'} w-5 text-center inline-block">${stat.bonus}</span><button onclick="updateBonusScore('${std.id}', 1)" class="text-yellow-500 hover:text-yellow-600 text-lg hover:-translate-y-1 active:translate-y-0 transition-transform flex-shrink-0 drop-shadow-[1px_1px_0px_#111827]" title="เพิ่มดาว 🌟">🌟</button></div></td>`;
+                tbHTML += `<td class="px-1.5 sm:px-2 py-1.5 border-r-[4px] border-b-[4px] border-[#111827] bg-white text-center"><div class="flex items-center justify-center space-x-1.5 bg-[#FF90E8]/20 p-1 border-[3px] border-transparent hover:border-[#111827] transition-all rounded-none">${stat.bonus > 0 ? `<button onclick="updateBonusScore('${std.id}', -1)" class="text-white text-[12px] bg-[#FF4A1C] border-[3px] border-[#111827] rounded-none w-6 h-6 flex items-center justify-center flex-shrink-0 transition-transform shadow-[2px_2px_0px_#111827] font-black active:translate-y-1 active:translate-x-1 active:shadow-none" title="ลดดาว">-</button>` : `<div class="w-6 flex-shrink-0"></div>`}<span class="text-sm font-black ${stat.bonus > 0 ? 'text-[#111827]' : 'text-gray-300'} w-5 text-center inline-block">${stat.bonus}</span><button onclick="updateBonusScore('${std.id}', 1)" class="text-[#FFD500] hover:text-yellow-400 text-lg hover:-translate-y-1 transition-transform flex-shrink-0 drop-shadow-[2px_2px_0px_#111827]" title="เพิ่มดาว 🌟">🌟</button></div></td>`;
                 
                 tbHTML += `
-                    <td class="px-2 sm:px-3 py-2 text-center font-black text-[#111827] border-r-[3px] border-[#111827] text-base sm:text-lg bg-[#bbf7d0] shadow-[inset_2px_0_0_rgba(255,255,255,0.7)]">${stat.total}</td>
-                    <td class="px-2 sm:px-3 py-2 text-center font-black text-[#111827] text-xl sm:text-2xl border-r-[3px] border-[#111827] bg-[#bbf7d0]">${stat.grade}</td>
-                    <td class="px-1 sm:px-2 py-2 text-center bg-white border-b-2 border-b-transparent">
+                    <td class="px-2 sm:px-3 py-2 text-center font-black text-white border-r-[4px] border-b-[4px] border-[#111827] text-base sm:text-lg bg-[#00A36C] shadow-[inset_4px_0_0_rgba(255,255,255,0.3)]">${stat.total}</td>
+                    <td class="px-2 sm:px-3 py-2 text-center font-black text-white text-xl sm:text-2xl border-r-[4px] border-b-[4px] border-[#111827] bg-[#00A36C] drop-shadow-[2px_2px_0px_#111827]">${stat.grade}</td>
+                    <td class="px-1 sm:px-2 py-2 text-center bg-white border-b-[4px] border-[#111827]">
                         <div class="flex flex-col gap-1.5 items-center justify-center opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
-                            <button onclick="editStudent('${std.id}')" class="text-[#111827] bg-[#fef08a] border-2 border-[#111827] shadow-[2px_2px_0px_#111827] px-2 py-1 rounded-md text-[10px] sm:text-xs transition-transform font-black w-full max-w-[44px] active:translate-y-0.5 active:shadow-none">แก้</button>
-                            <button onclick="deleteStudent('${std.id}')" class="text-white bg-red-500 border-2 border-[#111827] shadow-[2px_2px_0px_#111827] px-2 py-1 rounded-md text-[10px] sm:text-xs transition-transform font-black w-full max-w-[44px] active:translate-y-0.5 active:shadow-none">ลบ</button>
+                            <button onclick="editStudent('${std.id}')" class="text-[#111827] bg-[#FFD500] border-[3px] border-[#111827] shadow-[2px_2px_0px_#111827] px-2 py-1 rounded-none text-[9px] sm:text-[10px] transition-transform font-black w-full max-w-[44px] active:translate-y-1 active:translate-x-1 active:shadow-none uppercase">EDIT</button>
+                            <button onclick="deleteStudent('${std.id}')" class="text-white bg-[#FF4A1C] border-[3px] border-[#111827] shadow-[2px_2px_0px_#111827] px-2 py-1 rounded-none text-[9px] sm:text-[10px] transition-transform font-black w-full max-w-[44px] active:translate-y-1 active:translate-x-1 active:shadow-none uppercase">DEL</button>
                         </div>
                     </td>
                 </tr>`;
             });
 
-            if(cls.students.length === 0) tbHTML = `<tr><td colspan="15" class="text-center py-16 text-[#111827] font-black bg-white"><div class="text-4xl mb-2 opacity-50">🏫</div>ยังไม่มีรายชื่อนักเรียน<br><span class="text-xs mt-1 font-bold text-gray-500 block">กรุณาเพิ่มนักเรียนที่ตั้งค่าข้อมูล</span></td></tr>`;
+            if(cls.students.length === 0) tbHTML = `<tr><td colspan="15" class="text-center py-16 text-[#111827] font-black bg-white border-b-[4px] border-[#111827]"><div class="text-4xl mb-3 opacity-50 drop-shadow-[4px_4px_0px_#111827]">🏫</div>NO STUDENTS YET<br><span class="text-xs mt-2 font-bold text-gray-500 block uppercase">ADD STUDENTS IN SETTINGS PANEL</span></td></tr>`;
             document.getElementById('admin-table-body').innerHTML = tbHTML;
             
             updateTaskClassCheckboxes();
@@ -867,15 +910,15 @@
             const container = document.getElementById('task-class-checkboxes');
             if(!container) return;
             if(appData.classes.length === 0) {
-                container.innerHTML = '<span class="text-[#111827] font-black text-xs p-2">ไม่มีห้องเรียน</span>'; return;
+                container.innerHTML = '<span class="text-[#111827] font-black text-xs p-2 uppercase">NO CLASSES</span>'; return;
             }
             let html = '';
             appData.classes.forEach(c => {
                 const isChecked = c.id === activeAdminClassId ? 'checked' : '';
                 html += `
-                <label class="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-1.5 rounded-lg border-2 border-transparent hover:border-[#111827] transition-all">
-                    <input type="checkbox" value="${c.id}" class="task-class-cb border-2 border-[#111827] rounded w-4 h-4 cursor-pointer text-[#D97443] focus:ring-0" ${isChecked}>
-                    <span class="font-black text-[#111827]">${c.name}</span>
+                <label class="flex items-center gap-2 cursor-pointer hover:bg-[#FFD500] p-1.5 rounded-none border-[3px] border-transparent hover:border-[#111827] transition-all">
+                    <input type="checkbox" value="${c.id}" class="task-class-cb border-[3px] border-[#111827] rounded-none w-4 h-4 cursor-pointer text-[#2176FF] focus:ring-0" ${isChecked}>
+                    <span class="font-black text-[#111827] text-xs uppercase">${c.name}</span>
                 </label>`;
             });
             container.innerHTML = html;
@@ -904,46 +947,51 @@
                     }
                     .page:last-child { page-break-after: auto; }
                     .card { 
-                        border: 4px solid #111827; border-radius: 20px; padding: 0; 
-                        box-shadow: 6px 6px 0px #111827; display: flex; flex-direction: column; 
+                        border: 5px solid #111827; border-radius: 0px; padding: 0; 
+                        box-shadow: 8px 8px 0px #111827; display: flex; flex-direction: column; 
                         align-items: center; justify-content: space-between; overflow: hidden; 
                         box-sizing: border-box; position: relative; height: 100%;
                     }
                     .card-header { 
-                        width: 100%; background: #2C4A3E; color: #ffffff; padding: 12px 0; 
-                        font-weight: 900; font-size: 15px; letter-spacing: 1px; 
-                        border-bottom: 4px solid #111827; display: flex; align-items: center; 
+                        width: 100%; background: #111827; color: #FFD500; padding: 14px 0; 
+                        font-weight: 900; font-size: 16px; letter-spacing: 2px; 
+                        border-bottom: 5px solid #111827; display: flex; align-items: center; 
                         justify-content: center; gap: 8px; box-sizing: border-box; flex-shrink: 0; text-transform: uppercase;
                     }
-                    .logo-img { width: 24px; height: 24px; border-radius: 50%; border: 2px solid #111827; background: #fff; object-fit: contain; }
-                    .card-body { display: flex; flex-direction: column; align-items: center; justify-content: center; flex-grow: 1; width: 100%; }
+                    .logo-img { width: 28px; height: 28px; border-radius: 0; border: 3px solid #FFD500; background: #fff; object-fit: contain; }
+                    .card-body { display: flex; flex-direction: column; align-items: center; justify-content: center; flex-grow: 1; width: 100%; position: relative; z-index: 10; }
                     .qr-wrapper { 
-                        background: white; padding: 10px; border-radius: 16px; 
-                        border: 4px solid #111827; box-shadow: 4px 4px 0px #111827; 
-                        margin: 10px auto; display: flex; align-items: center; justify-content: center;
+                        background: white; padding: 12px; border-radius: 0; 
+                        border: 5px solid #111827; box-shadow: 6px 6px 0px #111827; 
+                        margin: 15px auto; display: flex; align-items: center; justify-content: center;
+                        transform: rotate(-2deg);
                     }
                     .qr-img { width: 110px; height: 110px; display: block; }
                     .name { 
-                        font-weight: 900; font-size: 20px; color: #111827; margin: 5px 0 10px 0; 
+                        font-weight: 900; font-size: 22px; color: #111827; margin: 10px 0 10px 0; 
                         text-align: center; width: 90%; white-space: nowrap; overflow: hidden; 
                         text-overflow: ellipsis; text-transform: uppercase;
+                        background: white; border: 4px solid #111827; padding: 4px 8px; box-shadow: 4px 4px 0px #111827;
                     }
                     .info-box { 
-                        background: #FACC15; border: 3px solid #111827; border-radius: 12px; 
+                        background: #111827; border: 4px solid #111827; border-radius: 0; 
                         padding: 8px 12px; width: 85%; font-size: 16px; font-weight: 900; 
-                        color: #111827; box-shadow: 4px 4px 0px #111827; text-align: center; margin-bottom: 12px; 
+                        color: white; box-shadow: 4px 4px 0px #111827; text-align: center; margin-bottom: 12px; 
+                        text-transform: uppercase; letter-spacing: 1px;
                     }
                     .hint { 
-                        font-size: 12px; font-weight: 900; background: #ffffff; color: #111827; 
-                        padding: 8px 16px; border-radius: 20px; border: 3px solid #111827; margin-bottom: 15px; flex-shrink: 0; box-shadow: 3px 3px 0px #111827;
+                        font-size: 14px; font-weight: 900; background: #FFD500; color: #111827; 
+                        padding: 10px 16px; border-radius: 0; border: 4px solid #111827; margin-bottom: 15px; flex-shrink: 0; box-shadow: 4px 4px 0px #111827;
+                        text-transform: uppercase;
                     }
+                    .bg-shape { position: absolute; border: 4px solid #111827; z-index: 0; }
                     @media print { body { background: transparent; padding: 0; } }
                 </style>
             </head>
             <body>`;
             
             let sortedStudents = [...cls.students].sort((a,b) => a.no - b.no);
-            let colors = ['#fef08a', '#d9f99d', '#fed7aa', '#bae6fd', '#fbcfe8', '#e9d5ff']; 
+            let colors = ['#FFD500', '#FF90E8', '#00A36C', '#2176FF', '#9D4EDD', '#FF4A1C']; 
             
             for (let i = 0; i < sortedStudents.length; i += 6) {
                 html += `<div class="page">`;
@@ -953,21 +1001,26 @@
                     const magicLink = `${baseUrl}?login=${std.studentId}`;
                     const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(magicLink)}&margin=1`;
                     const bgColor = colors[index % colors.length];
+                    const fgColor = (bgColor === '#00A36C' || bgColor === '#2176FF' || bgColor === '#9D4EDD' || bgColor === '#FF4A1C') ? '#fff' : '#111827';
                     
                     html += `
                     <div class="card" style="background-color: ${bgColor};">
+                        <!-- Decorative shapes -->
+                        <div class="bg-shape" style="top: -20px; left: -20px; width: 60px; height: 60px; background: #fff; border-radius: 50%;"></div>
+                        <div class="bg-shape" style="bottom: 20px; right: -20px; width: 40px; height: 40px; background: ${colors[(index+1)%colors.length]}; transform: rotate(45deg);"></div>
+                        
                         <div class="card-header">
                             <img src="https://upload.wikimedia.org/wikipedia/commons/4/4d/Hs_logo_mid.png" class="logo-img" crossorigin="anonymous">
-                            HongSonEduTrack
+                            EduTrack ID
                         </div>
                         <div class="card-body">
                             <div class="qr-wrapper">
                                 <img src="${qrUrl}" alt="QR Code" class="qr-img" crossorigin="anonymous" />
                             </div>
                             <div class="name">${std.name}</div>
-                            <div class="info-box">รหัส: ${std.studentId} &nbsp;|&nbsp; เลขที่: ${std.no}</div>
+                            <div class="info-box">ID: ${std.studentId} &nbsp;|&nbsp; NO: ${std.no}</div>
                         </div>
-                        <div class="hint">สแกนเพื่อตรวจสอบผลการเรียน</div>
+                        <div class="hint">SCAN TO CHECK STATUS</div>
                     </div>`;
                 });
                 
@@ -993,15 +1046,9 @@
             const sid = document.getElementById('input-std-id').value.trim(); const no = parseInt(document.getElementById('input-std-no').value); const prefix = document.getElementById('input-std-prefix').value.trim(); const fname = document.getElementById('input-std-fname').value.trim(); const lname = document.getElementById('input-std-lname').value.trim(); const name = `${prefix}${fname} ${lname}`.trim();
             if(cls.students.some(s => s.studentId === sid)) return showModal({title:"ข้อมูลซ้ำ", msg:`รหัส ${sid} มีอยู่แล้ว`}); 
             
-            const avatarUrl = document.getElementById('input-std-avatar-url').value.trim(); const fileInput = document.getElementById('input-std-avatar-file'); const btnSubmit = document.getElementById('btn-add-student');
-            let finalAvatar = avatarUrl;
+            const avatarUrl = document.getElementById('input-std-avatar-url').value.trim();
             
-            if (fileInput.files && fileInput.files[0]) {
-                btnSubmit.innerText = "กำลังอัปโหลด..."; btnSubmit.disabled = true; btnSubmit.classList.add('opacity-70', 'cursor-wait');
-                try { const base64Data = await getBase64Image(fileInput.files[0]); const uploadedUrl = await uploadImageToDrive(base64Data, sid); if(uploadedUrl) finalAvatar = uploadedUrl; } catch(err) { console.error(err); }
-                btnSubmit.innerText = "เพิ่มนักเรียน"; btnSubmit.disabled = false; btnSubmit.classList.remove('opacity-70', 'cursor-wait');
-            }
-            cls.students.push({ id: generateId(), studentId: sid, no: no, name: name, avatar: finalAvatar, scores: {}, attendance: null, midterm: null, final: null, bonus: 0 }); 
+            cls.students.push({ id: generateId(), studentId: sid, no: no, name: name, avatar: avatarUrl, scores: {}, attendance: null, midterm: null, final: null, bonus: 0 }); 
             saveData(); renderTeacherView(); e.target.reset(); document.getElementById('input-std-id').focus(); 
         }
 
@@ -1038,30 +1085,60 @@
             showModal({
                 title: "✏️ แก้ไขข้อมูลนักเรียน",
                 msg: `
-                    <div class="space-y-3 text-left mt-4 mb-2">
+                    <div class="space-y-4 text-left mt-4 mb-2">
                         <div class="grid grid-cols-2 gap-3">
-                            <div><label class="text-[11px] font-black text-[#111827] uppercase tracking-wide">รหัสนักเรียน</label><input type="text" id="edit-std-id" value="${std.studentId}" class="w-full border-[3px] border-[#111827] rounded-lg px-4 py-2 text-sm outline-none mt-1 focus:bg-[#fef08a] font-bold"></div>
-                            <div><label class="text-[11px] font-black text-[#111827] uppercase tracking-wide">เลขที่</label><input type="number" id="edit-std-no" value="${std.no}" class="w-full border-[3px] border-[#111827] rounded-lg px-4 py-2 text-sm outline-none mt-1 focus:bg-[#fef08a] font-bold"></div>
+                            <div><label class="text-[10px] font-black text-[#111827] uppercase tracking-wider bg-[#FFD500] px-1 border-[2px] border-[#111827]">รหัสนักเรียน</label><input type="text" id="edit-std-id" value="${std.studentId}" class="w-full border-[4px] border-[#111827] rounded-none px-4 py-2.5 text-sm outline-none mt-1 focus:bg-[#FFD500] font-black shadow-[4px_4px_0px_#111827] focus:shadow-none focus:translate-y-1 focus:translate-x-1 transition-all"></div>
+                            <div><label class="text-[10px] font-black text-[#111827] uppercase tracking-wider bg-[#FFD500] px-1 border-[2px] border-[#111827]">เลขที่</label><input type="number" id="edit-std-no" value="${std.no}" class="w-full border-[4px] border-[#111827] rounded-none px-4 py-2.5 text-sm outline-none mt-1 focus:bg-[#FFD500] font-black shadow-[4px_4px_0px_#111827] focus:shadow-none focus:translate-y-1 focus:translate-x-1 transition-all"></div>
                         </div>
-                        <div><label class="text-[11px] font-black text-[#111827] uppercase tracking-wide">ชื่อ-สกุล (แก้คำนำหน้าได้ที่นี่)</label><input type="text" id="edit-std-name" value="${std.name}" class="w-full border-[3px] border-[#111827] rounded-lg px-4 py-2 text-sm outline-none mt-1 focus:bg-[#fef08a] font-bold"></div>
-                        <div class="bg-[#F3F4F6] p-3 rounded-lg border-[3px] border-[#111827]">
-                            <label class="text-[11px] font-black text-[#111827] uppercase tracking-wide mb-2 block">อัปเดตรูปโปรไฟล์</label>
-                            <input type="url" id="edit-std-avatar-url" placeholder="วางลิงก์รูปใหม่ที่นี่" class="w-full border-[3px] border-[#111827] rounded-lg px-4 py-2 text-sm outline-none mb-2 focus:bg-white">
-                            <div class="flex items-center gap-2"><span class="text-xs font-black text-gray-500 uppercase">หรือ</span><input type="file" id="edit-std-avatar-file" accept="image/*" class="w-full border-2 border-[#111827] rounded-md px-2 py-1 text-sm bg-white file:mr-2 file:py-1 file:px-3 file:rounded file:border-0 file:text-[10px] file:font-black file:bg-[#111827] file:text-white cursor-pointer"></div>
+                        <div><label class="text-[10px] font-black text-[#111827] uppercase tracking-wider bg-[#FFD500] px-1 border-[2px] border-[#111827]">ชื่อ-สกุล</label><input type="text" id="edit-std-name" value="${std.name}" class="w-full border-[4px] border-[#111827] rounded-none px-4 py-2.5 text-sm outline-none mt-1 focus:bg-[#FFD500] font-black shadow-[4px_4px_0px_#111827] focus:shadow-none focus:translate-y-1 focus:translate-x-1 transition-all"></div>
+                        <div class="bg-[#F3F4F6] p-4 rounded-none border-[4px] border-[#111827] shadow-[4px_4px_0px_#111827]">
+                            <label class="text-[10px] font-black text-white bg-[#2176FF] px-2 py-1 uppercase tracking-wider mb-2 inline-block border-[2px] border-[#111827]">อัปเดตรูปโปรไฟล์ (URL)</label>
+                            <input type="url" id="edit-std-avatar-url" placeholder="วางลิงก์รูปใหม่ที่นี่" value="${std.avatar}" class="w-full border-[4px] border-[#111827] rounded-none px-4 py-2.5 text-sm outline-none focus:bg-white font-black shadow-[2px_2px_0px_#111827]">
+                        </div>
+                    </div>
+                `,
+                type: 'confirm',
+                onConfirm: () => {
+                    const newId = document.getElementById('edit-std-id').value.trim(); const newNo = parseInt(document.getElementById('edit-std-no').value); const newName = document.getElementById('edit-std-name').value.trim(); const newAvatarUrl = document.getElementById('edit-std-avatar-url').value.trim();
+                    if(newId && newName && newNo > 0) { std.studentId = newId; std.no = newNo; std.name = newName; std.avatar = newAvatarUrl; saveData(); renderTeacherView(); } 
+                    else { setTimeout(() => showModal({title: "ผิดพลาด", msg: "ข้อมูลไม่ครบถ้วน", type: "alert"}), 300); }
+                }
+            });
+        }
+
+        function promptStudentAvatarUpdate() {
+            if(!loggedInStudentId) return;
+            showModal({
+                title: "🖼️ เปลี่ยนรูปโปรไฟล์",
+                msg: `
+                    <div class="space-y-4 text-left mt-4 mb-2">
+                        <p class="text-xs text-gray-700 font-bold mb-2 uppercase tracking-wide">นำลิงก์รูปภาพ (URL) ของคุณมาวางที่นี่</p>
+                        <div class="bg-[#F3F4F6] p-4 rounded-none border-[4px] border-[#111827] shadow-[4px_4px_0px_#111827]">
+                            <input type="url" id="student-update-avatar-url" placeholder="เช่น https://..." class="w-full border-[4px] border-[#111827] rounded-none px-4 py-3 text-sm outline-none focus:bg-white font-black shadow-[2px_2px_0px_#111827]">
                         </div>
                     </div>
                 `,
                 type: 'confirm',
                 onConfirm: async () => {
-                    const newId = document.getElementById('edit-std-id').value.trim(); const newNo = parseInt(document.getElementById('edit-std-no').value); const newName = document.getElementById('edit-std-name').value.trim(); const newAvatarUrl = document.getElementById('edit-std-avatar-url').value.trim(); const newAvatarFile = document.getElementById('edit-std-avatar-file');
-                    let finalAvatar = std.avatar; 
-                    if (newAvatarFile.files && newAvatarFile.files[0]) {
-                        document.getElementById('custom-modal-message').innerHTML = `<div class="text-center py-6 text-[#2C4A3E] font-black text-lg"><div class="animate-spin rounded-full h-10 w-10 border-t-4 border-[#2C4A3E] border-b-4 border-[#FACC15] mb-4 mx-auto"></div>กำลังอัปโหลดรูปลง Drive...<br><span class="text-sm text-gray-500 font-bold">กรุณารอสักครู่</span></div>`;
-                        document.getElementById('custom-modal-actions').classList.add('hidden');
-                        try { const base64Data = await getBase64Image(newAvatarFile.files[0]); const uploadedUrl = await uploadImageToDrive(base64Data, newId); if(uploadedUrl) finalAvatar = uploadedUrl; } catch(e){}
-                    } else if (newAvatarUrl !== "") { finalAvatar = newAvatarUrl; }
-                    if(newId && newName && newNo > 0) { std.studentId = newId; std.no = newNo; std.name = newName; std.avatar = finalAvatar; saveData(); renderTeacherView(); } 
-                    else { setTimeout(() => showModal({title: "ผิดพลาด", msg: "ข้อมูลไม่ครบถ้วน", type: "alert"}), 300); }
+                    const newAvatarUrl = document.getElementById('student-update-avatar-url').value.trim();
+                    
+                    let foundStd = null, foundCls = null;
+                    for(let c of appData.classes) {
+                        let s = c.students.find(x => x.studentId === loggedInStudentId);
+                        if(s) { foundStd = s; foundCls = c; break; }
+                    }
+                    if(!foundStd) return;
+
+                    if(newAvatarUrl !== "" && newAvatarUrl !== foundStd.avatar) {
+                        foundStd.avatar = newAvatarUrl;
+                        await saveData();
+                        renderStudentResult(foundStd, foundCls);
+                        if(!document.getElementById('teacher-view').classList.contains('hidden')) renderTeacherView();
+                        if(!document.getElementById('dashboard-view').classList.contains('hidden')) renderDashboard();
+                        setTimeout(() => showModal({title: "สำเร็จ", msg: "✅ อัปเดตรูปโปรไฟล์เรียบร้อยแล้ว", type: "alert"}), 300);
+                    } else {
+                        setTimeout(() => showModal({title: "แจ้งเตือน", msg: "ไม่มีการเปลี่ยนแปลงข้อมูล หรือคุณไม่ได้ใส่ลิงก์", type: "alert"}), 300);
+                    }
                 }
             });
         }
@@ -1074,7 +1151,7 @@
             if(cbs.length > 1) { showModal({title: "สำเร็จ", msg: `✅ เพิ่มชิ้นงาน <b>${name}</b> ลงใน <b>${cbs.length} ห้องเรียน</b> เรียบร้อยแล้ว`, type: "alert"}); }
         }
 
-        function editTask(tid) { const cls = getActiveAdminClass(); const task = cls.assignments.find(a => a.id === tid); if(!task) return; const safeName = task.name.replace(/"/g, '&quot;'); showModal({ title: "✏️ แก้ไขชิ้นงาน", msg: `<div class="space-y-3 text-left mt-4 mb-2"><div><label class="text-[11px] font-black text-[#111827] uppercase tracking-wide">ชื่อชิ้นงาน</label><input type="text" id="edit-task-name" value="${safeName}" class="w-full border-[3px] border-[#111827] rounded-lg px-4 py-2 text-sm outline-none mt-1 focus:bg-[#fef08a] font-bold"></div><div><label class="text-[11px] font-black text-[#111827] uppercase tracking-wide">คะแนนเต็ม</label><input type="number" id="edit-task-score" value="${task.maxScore}" min="1" class="w-full border-[3px] border-[#111827] rounded-lg px-4 py-2 text-sm outline-none mt-1 focus:bg-[#fef08a] font-bold"></div></div>`, type: 'confirm', onConfirm: () => { const newName = document.getElementById('edit-task-name').value.trim(); const newScore = parseInt(document.getElementById('edit-task-score').value); if(newName && newScore > 0) { task.name = newName; task.maxScore = newScore; cls.students.forEach(s => { if(s.scores[tid] !== undefined && s.scores[tid] !== null && s.scores[tid] !== "submitted" && s.scores[tid] > newScore) s.scores[tid] = newScore; }); saveData(); renderTeacherView(); } else { setTimeout(() => { showModal({title: "ข้อผิดพลาด", msg: "ข้อมูลไม่ถูกต้อง", type: "alert"}); }, 300); } } }); }
+        function editTask(tid) { const cls = getActiveAdminClass(); const task = cls.assignments.find(a => a.id === tid); if(!task) return; const safeName = task.name.replace(/"/g, '&quot;'); showModal({ title: "✏️ แก้ไขชิ้นงาน", msg: `<div class="space-y-4 text-left mt-4 mb-2"><div><label class="text-[10px] font-black text-[#111827] uppercase tracking-wider bg-[#FFD500] px-1 border-[2px] border-[#111827]">ชื่อชิ้นงาน</label><input type="text" id="edit-task-name" value="${safeName}" class="w-full border-[4px] border-[#111827] rounded-none px-4 py-2.5 text-sm outline-none mt-1 focus:bg-white font-black shadow-[4px_4px_0px_#111827]"></div><div><label class="text-[10px] font-black text-[#111827] uppercase tracking-wider bg-[#FFD500] px-1 border-[2px] border-[#111827]">คะแนนเต็ม</label><input type="number" id="edit-task-score" value="${task.maxScore}" min="1" class="w-full border-[4px] border-[#111827] rounded-none px-4 py-2.5 text-sm outline-none mt-1 focus:bg-white font-black shadow-[4px_4px_0px_#111827]"></div></div>`, type: 'confirm', onConfirm: () => { const newName = document.getElementById('edit-task-name').value.trim(); const newScore = parseInt(document.getElementById('edit-task-score').value); if(newName && newScore > 0) { task.name = newName; task.maxScore = newScore; cls.students.forEach(s => { if(s.scores[tid] !== undefined && s.scores[tid] !== null && s.scores[tid] !== "submitted" && s.scores[tid] > newScore) s.scores[tid] = newScore; }); saveData(); renderTeacherView(); } else { setTimeout(() => { showModal({title: "ข้อผิดพลาด", msg: "ข้อมูลไม่ถูกต้อง", type: "alert"}); }, 300); } } }); }
         function deleteTask(tid) { showModal({ title:"ลบชิ้นงาน", msg:"ยืนยันการลบคอลัมน์นี้?", type:'confirm', onConfirm: () => { const cls = getActiveAdminClass(); cls.assignments = cls.assignments.filter(a => a.id !== tid); cls.students.forEach(s => delete s.scores[tid]); saveData(); renderTeacherView(); }}); }
         function deleteStudent(sid) { showModal({ title:"ลบนักเรียน", msg:"ยืนยันการลบนักเรียนคนนี้ออกจากห้อง?", type:'confirm', onConfirm: () => { const cls = getActiveAdminClass(); cls.students = cls.students.filter(s => s.id !== sid); saveData(); renderTeacherView(); }}); }
         
@@ -1092,11 +1169,16 @@
         function toggleBodyScroll() {
             const isStudentSearch = !document.getElementById('student-view').classList.contains('hidden') && 
                                     !document.getElementById('student-search-panel').classList.contains('hidden');
-            if (isStudentSearch) {
-                document.body.classList.add('overflow-hidden', 'h-screen');
+            
+            const footer = document.getElementById('main-footer');
+            if (!document.getElementById('student-view').classList.contains('hidden')) {
+                footer.style.display = 'block';
             } else {
-                document.body.classList.remove('overflow-hidden', 'h-screen');
+                footer.style.display = 'none';
             }
+
+            if (isStudentSearch) { document.body.classList.add('overflow-hidden', 'h-screen'); } 
+            else { document.body.classList.remove('overflow-hidden', 'h-screen'); }
         }
 
         function performStudentLogin(sid) {
@@ -1123,21 +1205,21 @@
             const imgEl = document.getElementById('res-avatar');
             imgEl.src = avatar; imgEl.setAttribute('data-fallback', fallbackSvg); imgEl.onerror = function() { this.onerror=null; this.src=this.getAttribute('data-fallback'); }; imgEl.onclick = function() { viewImage(this.src); };
 
-            document.getElementById('res-class').innerText = `ห้อง ${cls.name} • เลขที่ ${std.no}`; document.getElementById('res-name').innerText = std.name; document.getElementById('res-id').innerText = std.studentId; 
+            document.getElementById('res-class').innerText = `CLASS ${cls.name} • NO.${std.no}`; document.getElementById('res-name').innerText = std.name; document.getElementById('res-id').innerText = std.studentId; 
             document.getElementById('res-grade').innerText = stat.grade; document.getElementById('res-score-assign').innerText = stat.assignRawSum; document.getElementById('res-score-att').innerText = stat.att; 
             document.getElementById('res-score-mid').innerText = stat.mid; document.getElementById('res-score-fin').innerText = stat.fin; document.getElementById('res-score-bonus').innerText = `+${stat.bonus}`; document.getElementById('res-score-total').innerText = stat.total;
             
             const bar = document.getElementById('res-progress-bar');
-            bar.style.width = stat.total + '%'; if(stat.total < 50) bar.style.backgroundColor = '#ef4444'; else if(stat.total < 70) bar.style.backgroundColor = '#facc15'; else bar.style.backgroundColor = '#2c4a3e';
+            bar.style.width = stat.total + '%'; if(stat.total < 50) bar.style.backgroundColor = '#FF4A1C'; else if(stat.total < 70) bar.style.backgroundColor = '#FFD500'; else bar.style.backgroundColor = '#00A36C';
             
             let tHTML = '';
-            if(cls.assignments.length === 0) tHTML = '<div class="text-sm text-[#111827] text-center py-8 bg-[#F3F4F6] rounded-xl border-[3px] border-[#111827] font-black shadow-[4px_4px_0px_#111827]">ไม่มีชิ้นงานในระบบ</div>';
+            if(cls.assignments.length === 0) tHTML = '<div class="text-sm text-[#111827] text-center py-8 bg-[#F3F4F6] rounded-none border-[4px] border-[#111827] font-black shadow-[6px_6px_0px_#111827] uppercase">NO TASKS ASSIGNED</div>';
             else {
                 cls.assignments.forEach(task => {
                     const score = std.scores[task.id]; const isPending = score === "submitted"; const hasScore = score !== null && score !== undefined && score !== "" && !isPending;
-                    if (hasScore) tHTML += `<div class="flex flex-col sm:flex-row justify-between sm:items-center bg-[#bbf7d0] p-4 rounded-xl border-[3px] border-[#111827] gap-2 shadow-[4px_4px_0px_#111827]"><span class="text-[#111827] font-black text-sm">📝 ${task.name}</span><div class="flex items-center gap-2"><span class="text-[10px] font-black text-[#111827] bg-white px-2 py-1 rounded border-2 border-[#111827] shadow-[2px_2px_0px_#111827] uppercase">ตรวจแล้ว</span><span class="text-[#111827] font-black text-lg">${score} <span class="text-xs font-bold text-gray-700">/ ${task.maxScore}</span></span></div></div>`;
-                    else if (isPending) tHTML += `<div class="flex flex-col sm:flex-row justify-between sm:items-center bg-[#bfdbfe] p-4 rounded-xl border-[3px] border-[#111827] gap-2 shadow-[4px_4px_0px_#111827]"><span class="text-[#111827] font-black text-sm">⏳ ${task.name}</span><span class="text-xs font-black bg-white text-[#111827] px-3 py-1.5 rounded border-2 border-[#111827] shadow-[2px_2px_0px_#111827] text-center uppercase">รอครูตรวจ</span></div>`;
-                    else tHTML += `<div class="flex flex-col sm:flex-row justify-between sm:items-center bg-[#fecaca] p-4 rounded-xl border-[3px] border-[#111827] gap-2 shadow-[4px_4px_0px_#111827]"><span class="text-[#111827] font-black text-sm">⚠️ ${task.name}</span><span class="text-xs font-black bg-white text-[#111827] px-3 py-1.5 rounded border-2 border-[#111827] shadow-[2px_2px_0px_#111827] text-center uppercase">ยังไม่ส่งงาน</span></div>`;
+                    if (hasScore) tHTML += `<div class="flex flex-col sm:flex-row justify-between sm:items-center bg-[#00A36C] p-4 rounded-none border-[4px] border-[#111827] gap-2 shadow-[6px_6px_0px_#111827] hover:-translate-y-1 hover:translate-x-1 hover:shadow-[0px_0px_0px_#111827] transition-all"><span class="text-white font-black text-sm uppercase">📝 ${task.name}</span><div class="flex items-center gap-2"><span class="text-[10px] font-black text-[#111827] bg-[#FFD500] px-2 py-1 rounded-none border-[3px] border-[#111827] shadow-[2px_2px_0px_#111827] uppercase">GRADED</span><span class="text-white font-black text-xl drop-shadow-[2px_2px_0px_#111827]">${score} <span class="text-xs font-bold text-[#FFD500]">/ ${task.maxScore}</span></span></div></div>`;
+                    else if (isPending) tHTML += `<div class="flex flex-col sm:flex-row justify-between sm:items-center bg-[#2176FF] p-4 rounded-none border-[4px] border-[#111827] gap-2 shadow-[6px_6px_0px_#111827] hover:-translate-y-1 hover:translate-x-1 hover:shadow-[0px_0px_0px_#111827] transition-all"><span class="text-white font-black text-sm uppercase">⏳ ${task.name}</span><span class="text-xs font-black bg-white text-[#111827] px-3 py-1.5 rounded-none border-[3px] border-[#111827] shadow-[3px_3px_0px_#111827] text-center uppercase tracking-wider">WAITING</span></div>`;
+                    else tHTML += `<div class="flex flex-col sm:flex-row justify-between sm:items-center bg-[#FF4A1C] p-4 rounded-none border-[4px] border-[#111827] gap-2 shadow-[6px_6px_0px_#111827] hover:-translate-y-1 hover:translate-x-1 hover:shadow-[0px_0px_0px_#111827] transition-all"><span class="text-white font-black text-sm uppercase">⚠️ ${task.name}</span><span class="text-xs font-black bg-white text-[#111827] px-3 py-1.5 rounded-none border-[3px] border-[#111827] shadow-[3px_3px_0px_#111827] text-center uppercase tracking-wider">MISSING</span></div>`;
                 });
             }
             document.getElementById('res-tasks-list').innerHTML = tHTML;
@@ -1145,7 +1227,7 @@
 
         function populateDashDropdown() {
             const dSel = document.getElementById('dash-class-selector');
-            if(appData.classes.length === 0) { dSel.innerHTML = '<option value="">ไม่มีข้อมูล</option>'; return; }
+            if(appData.classes.length === 0) { dSel.innerHTML = '<option value="">NO DATA</option>'; return; }
             const groups = {}; appData.classes.forEach(c => { let lvl = c.name.split('/')[0].trim(); if(!groups[lvl]) groups[lvl] = []; groups[lvl].push(c); });
             let optionsHtml = ''; for(let lvl in groups) { optionsHtml += `<optgroup label="${lvl}">`; groups[lvl].sort((a,b)=> a.name.localeCompare(b.name)).forEach(c => { optionsHtml += `<option value="${c.id}">${c.name}</option>`; }); optionsHtml += `</optgroup>`; }
             dSel.innerHTML = optionsHtml;
@@ -1155,48 +1237,33 @@
             const cid = document.getElementById('dash-class-selector').value; const cls = appData.classes.find(c => c.id === cid); const body = document.getElementById('dash-ranking-body');
             if(!cls || cls.students.length === 0) {
                 document.getElementById('stat-avg').innerText = '0'; document.getElementById('stat-high').innerText = '0'; document.getElementById('stat-grade4').innerHTML = '0 <span class="text-xs sm:text-base font-bold text-[#111827]">คน</span>';
-                body.innerHTML = `<tr><td colspan="6" class="text-center py-12 text-[#111827] font-black bg-white">ยังไม่มีข้อมูลนักเรียนในห้องนี้</td></tr>`; return;
+                body.innerHTML = `<tr><td colspan="6" class="text-center py-12 text-[#111827] font-black bg-white uppercase">NO DATA AVAILABLE</td></tr>`; return;
             }
             let results = cls.students.map(std => { const stat = calculateStudentScore(std, cls.assignments); return { ...std, total: stat.total, grade: stat.grade }; });
             const maxScore = Math.max(...results.map(r => r.total)); const avgScore = (results.reduce((sum, r) => sum + r.total, 0) / results.length).toFixed(1); const g4Count = results.filter(r => parseFloat(r.grade) === 4.0).length;
-            document.getElementById('stat-high').innerText = maxScore; document.getElementById('stat-avg').innerText = avgScore; document.getElementById('stat-grade4').innerHTML = `${g4Count} <span class="text-xs sm:text-base font-bold text-[#111827]">คน</span>`;
+            document.getElementById('stat-high').innerText = maxScore; document.getElementById('stat-avg').innerText = avgScore; document.getElementById('stat-grade4').innerHTML = `${g4Count} <span class="text-xs sm:text-base font-black text-white uppercase">students</span>`;
             results.sort((a,b) => b.total - a.total);
             let html = '';
             results.forEach((r, idx) => {
                 let rankStr = `<span class="text-[#111827] font-black">${idx + 1}</span>`; 
-                if(idx === 0) rankStr = '<span class="text-2xl drop-shadow-md">🥇</span>'; if(idx === 1) rankStr = '<span class="text-2xl drop-shadow-md">🥈</span>'; if(idx === 2) rankStr = '<span class="text-2xl drop-shadow-md">🥉</span>';
+                if(idx === 0) rankStr = '<span class="text-2xl drop-shadow-[2px_2px_0px_#111827]">🥇</span>'; if(idx === 1) rankStr = '<span class="text-2xl drop-shadow-[2px_2px_0px_#111827]">🥈</span>'; if(idx === 2) rankStr = '<span class="text-2xl drop-shadow-[2px_2px_0px_#111827]">🥉</span>';
                 const avatar = getAvatar(r.name, r.avatar); const fallbackSvg = generateSvgAvatar(r.name).replace(/"/g, '&quot;');
 
-                html += `<tr class="hover:bg-[#F3F4F6] transition-colors bg-white"><td class="px-4 sm:px-6 py-4 text-center border-b-[3px] border-[#111827]">${rankStr}</td><td class="px-2 py-4 text-center border-b-[3px] border-[#111827]"><div class="flex items-center justify-center"><img src="${avatar}" data-fallback="${fallbackSvg}" onerror="this.onerror=null; this.src=this.getAttribute('data-fallback');" onclick="viewImage(this.src)" class="w-10 h-10 min-w-[40px] rounded-lg object-cover border-[3px] border-[#111827] shadow-[2px_2px_0px_#111827] flex-shrink-0 cursor-pointer hover:-translate-y-1 transition-transform bg-gray-50"></div></td><td class="px-4 py-4 text-xs sm:text-sm text-gray-600 font-bold border-b-[3px] border-[#111827]">${r.studentId}</td><td class="px-4 py-4 text-sm sm:text-base font-black text-[#111827] border-b-[3px] border-[#111827]">${r.name}</td><td class="px-4 py-4 text-center font-black text-[#111827] text-base sm:text-lg border-b-[3px] border-[#111827]">${r.total}</td><td class="px-4 sm:px-6 py-4 text-center font-black text-white text-lg sm:text-xl border-b-[3px] border-[#111827] bg-[#2C4A3E]">${r.grade}</td></tr>`;
+                html += `<tr class="hover:bg-[#FFD500] transition-colors bg-white"><td class="px-4 sm:px-6 py-4 text-center border-b-[4px] border-[#111827]">${rankStr}</td><td class="px-2 py-4 text-center border-b-[4px] border-[#111827]"><div class="flex items-center justify-center"><img src="${avatar}" data-fallback="${fallbackSvg}" onerror="this.onerror=null; this.src=this.getAttribute('data-fallback');" onclick="viewImage(this.src)" class="w-10 h-10 min-w-[40px] rounded-none object-cover border-[3px] border-[#111827] shadow-[2px_2px_0px_#111827] flex-shrink-0 cursor-pointer hover:-translate-y-1 hover:shadow-[4px_4px_0px_#111827] transition-all bg-white"></div></td><td class="px-4 py-4 text-xs sm:text-sm text-gray-700 font-bold border-b-[4px] border-[#111827]">${r.studentId}</td><td class="px-4 py-4 text-sm sm:text-base font-black text-[#111827] border-b-[4px] border-[#111827] uppercase tracking-wide">${r.name}</td><td class="px-4 py-4 text-center font-black text-[#111827] text-base sm:text-lg border-b-[4px] border-[#111827]">${r.total}</td><td class="px-4 sm:px-6 py-4 text-center font-black text-white text-lg sm:text-xl border-b-[4px] border-[#111827] bg-[#00A36C] drop-shadow-[2px_2px_0px_#111827]">${r.grade}</td></tr>`;
             });
             body.innerHTML = html;
         }
 
         function checkAdminAccess() {
             if(adminAuthenticated) { switchView('teacher'); return; }
-            showModal({ title: "เข้าสู่ระบบผู้ดูแล", msg: "กรุณาระบุรหัสผ่านเพื่อเข้าจัดการข้อมูล", type: 'prompt', inputType: 'password', onConfirm: (pwd) => { if(pwd === ADMIN_PASSWORD) { adminAuthenticated = true; switchView('teacher'); } else showModal({title:"ข้อผิดพลาด", msg:"รหัสผ่านไม่ถูกต้อง!", type:'alert'}); } });
+            showModal({ title: "SYSTEM SECURE", msg: "PLEASE ENTER ADMIN PASSWORD", type: 'prompt', inputType: 'password', onConfirm: (pwd) => { if(pwd === ADMIN_PASSWORD) { adminAuthenticated = true; switchView('teacher'); } else showModal({title:"ERROR", msg:"INVALID PASSWORD!", type:'alert'}); } });
         }
 
         function switchView(view) {
-            const views = ['student-view', 'dashboard-view', 'teacher-view']; 
-            views.forEach(v => document.getElementById(v).classList.add('hidden'));
-            
-            const btns = ['btn-nav-student', 'btn-nav-dashboard', 'btn-nav-teacher']; 
-            btns.forEach(b => document.getElementById(b).className = "px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-black transition-all bg-white text-[#111827] neo-border neo-shadow neo-btn hover:bg-gray-100");
-            
-            document.getElementById(`${view}-view`).classList.remove('hidden'); 
-            document.getElementById(`btn-nav-${view}`).className = "px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-black transition-all bg-[#2C4A3E] text-white neo-border neo-shadow neo-btn";
-            
-            // แสดง/ซ่อน แบนเนอร์ Footer
-            const footer = document.getElementById('site-footer');
-            if (view === 'student') {
-                footer.classList.remove('hidden');
-            } else {
-                footer.classList.add('hidden');
-            }
-
-            if (view === 'dashboard') { populateDashDropdown(); renderDashboard(); } 
-            if (view === 'teacher') { renderTeacherView(); }
+            const views = ['student-view', 'dashboard-view', 'teacher-view']; views.forEach(v => document.getElementById(v).classList.add('hidden'));
+            const btns = ['btn-nav-student', 'btn-nav-dashboard', 'btn-nav-teacher']; btns.forEach(b => document.getElementById(b).className = "px-3 py-2 sm:px-5 sm:py-2.5 rounded-none text-xs sm:text-sm font-black transition-all bg-white text-[#111827] neo-border neo-shadow-sm neo-btn uppercase tracking-wider");
+            document.getElementById(`${view}-view`).classList.remove('hidden'); document.getElementById(`btn-nav-${view}`).className = "px-3 py-2 sm:px-5 sm:py-2.5 rounded-none text-xs sm:text-sm font-black transition-all bg-[#111827] text-white neo-border neo-shadow-sm neo-btn uppercase tracking-wider";
+            if (view === 'dashboard') { populateDashDropdown(); renderDashboard(); } if (view === 'teacher') { renderTeacherView(); }
             toggleBodyScroll();
         }
 
